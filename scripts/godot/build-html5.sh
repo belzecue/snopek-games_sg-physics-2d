@@ -12,5 +12,5 @@ echo "Running: scons $OPTS $SCONS_OPTS..."
 scons $OPTS $SCONS_OPTS \
 	|| exit 1
 
-mv bin/godot.${PLATFORM}.${FN_OPT}.zip bin/$BUILD_TYPE.zip
+mv bin/godot.${PLATFORM}${FN_OPT}.zip bin/$BUILD_TYPE.zip
 

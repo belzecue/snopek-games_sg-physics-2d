@@ -27,7 +27,9 @@ build:
   script:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
-  #rules:
+  rules:
+    - if: '$GODOT_BUILD_REGISTRY == null || $GODOT_BUILD_REGISTRY_USERNAME == null || $GODOT_BUILD_REGISTRY_PASSWORD == null'
+      when: never
   #  - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
   #  - changes:
   #    - godot/**/*
