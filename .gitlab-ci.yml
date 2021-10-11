@@ -3,19 +3,24 @@ image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
 stages:
   - build
 
-linux:
+build:
   image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
   stage: build
   tags:
     - multicore
   variables:
     GODOT_DOWNLOAD_URL: "https://github.com/godotengine/godot/archive/3.3.4-stable.tar.gz"
-    BUILD_TYPE: linux-64
+  parallel:
+    matrix:
+      - BUILD_TYPE:
+        - linux-editor-64
+        - linux-export-template-debug-64
+        - linux-export-template-release-64
   script:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
   artifacts:
-    name: sg-physics-2d-$CI_JOB_NAME
+    name: sg-physics-2d-$BUILD_TYPE
     paths:
       - build/godot/bin
 

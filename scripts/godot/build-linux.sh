@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPTS="-j${NUM_CORES} platform=x11 production=yes"
+OPTS="-j${NUM_CORES}"
 
 if [ "$BITS" = "32" ]; then
 	export PATH="${GODOT_SDK_LINUX_X86}/bin:${BASE_PATH}"
@@ -10,11 +10,10 @@ else
 	OPTS="$OPTS bits=64"
 fi
 
-echo "Building editor..."
-scons $OPTS $SCONS_OPTS tools=yes target=release_debug \
-	|| exit 1
+echo "Running: scons $OPTS $SCONS_OPTS..."
+if scons $OPTS $SCONS_OPTS; then
+	mv bin/godot.${PLATFORM}${FN_OPT}${FN_TOOLS}.$BITS bin/$BUILD_TYPE
+	exit 0
+fi
 
-echo "Building export templates..."
-scons $OPTS $SCONS_OPTS tools=no target=release \
-	|| exit 1
-
+exit 1

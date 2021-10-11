@@ -41,28 +41,29 @@ fi
 PRIVATE_IMAGE="no"
 IMAGE=""
 CMD=""
+PLATFORM=""
 
 case "$BUILD_TYPE" in
-	server-tools|server)
-		IMAGE="godot-linux"
-		CMD="build-server.sh"
-		;;
-	linux-32|linux-64)
+	linux-*)
 		IMAGE="godot-linux"
 		CMD="build-linux.sh"
+		PLATFORM="x11"
 		;;
-	windows-32|windows-64)
+	windows-*)
 		IMAGE="godot-windows"
 		CMD="build-windows.sh"
+		PLATFORM="windows"
 		;;
-	macosx-x86-64|macosx-arm64|macosx-universal)
+	macosx-*)
 		IMAGE="godot-osx"
 		PRIVATE_IMAGE="yes"
 		CMD="build-macosx.sh"
+		PLATFORM="osx"
 		;;
-	html5)
+	html5-*)
 		IMAGE="godot-javascript"
 		CMD="build-html5.sh"
+		PLATFORM="javascript"
 		;;
 	*)
 		die "Unknown BUILD_TYPE: $BUILD_TYPE"
@@ -86,15 +87,35 @@ case "$BUILD_TYPE" in
 		;;
 esac
 
-TOOLS=""
+SCONS_OPTS=${SCONS_OPTS:-production=yes}
+SCONS_OPTS="$SCONS_OPTS platform=$PLATFORM custom_modules=/src/modules"
+
+TARGET=""
+FN_TOOLS=""
+FN_OPT=".opt"
 case "$BUILD_TYPE" in
-	*-tools*)
-		TOOLS="yes"
+	*-editor*)
+		TARGET="editor"
+		SCONS_OPTS="$SCONS_OPTS tools=yes target=release_debug"
+		FN_TOOLS=".tools"
+		;;
+
+	*-export-template-debug*)
+		TARGET="export-template-debug"
+		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
+		;;
+
+	*-export-template-release*)
+		TARGET="export-template-release"
+		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
+		FN_OPT=".opt.debug"
+		;;
+	
+	*)
+		die "Unable to identify target from BUILD_TYPE: $BUILD_TYPE"
 		;;
 esac
 
-SCONS_OPTS=${SCONS_OPTS:-}
-SCONS_OPTS="$SCONS_OPTS custom_modules=/src/modules"
 
 if [ -n "$GODOT_BUILD_REGISTRY" ]; then
 	# In the registry, godot-linux becomes godot/linux.
@@ -110,6 +131,6 @@ fi
 
 PODMAN_OPTS=${PODMAN_OPTS:-}
 
-podman run --rm --systemd=false -v "$(realpath $GODOT_BUILD_DIR):/build" -v "$(realpath $GODOT_SOURCE_DIR):/src" -v "$(pwd)/scripts/godot:/scripts" -w /build -e NUM_CORES="$NUM_CORES" -e BITS="$BITS" -e MONO="$MONO" -e TOOLS="$TOOLS" -e "SCONS_OPTS=$SCONS_OPTS" -e BUILD_TYPE=$BUILD_TYPE $PODMAN_OPTS "$IMAGE" /scripts/$CMD $BUILD_TYPE
+podman run --rm --systemd=false -v "$(realpath $GODOT_BUILD_DIR):/build" -v "$(realpath $GODOT_SOURCE_DIR):/src" -v "$(pwd)/scripts/godot:/scripts" -w /build -e NUM_CORES="$NUM_CORES" -e PLATFORM="$PLATFORM" -e BITS="$BITS" -e MONO="$MONO" -e TARGET="$TARGET" -e FN_TOOLS="$FN_TOOLS" -e FN_OPT="$FN_OPT" -e "SCONS_OPTS=$SCONS_OPTS" -e BUILD_TYPE=$BUILD_TYPE $PODMAN_OPTS "$IMAGE" /scripts/$CMD $BUILD_TYPE
 exit $?
 
