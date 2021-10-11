@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPTS="-j${NUM_CORES} platform=windows tools=no target=release production=yes"
+OPTS="-j${NUM_CORES}"
 
 if [ "$BITS" = "32" ]; then
 	OPTS="$OPTS bits=32"
@@ -9,5 +9,8 @@ else
 fi
 
 echo "Running: scons $OPTS $SCONS_OPTS..."
-exec scons $OPTS $SCONS_OPTS
+scons $OPTS $SCONS_OPTS \
+	|| exit 1
+
+mv bin/godot.${PLATFORM}${FN_OPT}${FN_TOOLS}.$BITS.exe bin/$BUILD_TYPE.exe
 

@@ -16,9 +16,21 @@ build:
         - linux-editor-64
         - linux-export-template-debug-64
         - linux-export-template-release-64
+        - windows-editor-64
+        - windows-export-template-debug-64
+        - windows-export-template-release-64
+        - macosx-editor-64
+        - macosx-export-template-debug-64
+        - macosx-export-template-release-64
+        - html5-export-template-debug
+        - html5-export-template-release
   script:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
+  #rules:
+  #  - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
+  #  - changes:
+  #    - godot/**/*
   artifacts:
     name: sg-physics-2d-$BUILD_TYPE
     paths:

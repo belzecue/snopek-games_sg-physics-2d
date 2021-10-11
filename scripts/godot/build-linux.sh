@@ -11,9 +11,8 @@ else
 fi
 
 echo "Running: scons $OPTS $SCONS_OPTS..."
-if scons $OPTS $SCONS_OPTS; then
-	mv bin/godot.${PLATFORM}${FN_OPT}${FN_TOOLS}.$BITS bin/$BUILD_TYPE
-	exit 0
-fi
+scons $OPTS $SCONS_OPTS \
+	|| exit 1
 
-exit 1
+mv bin/godot.${PLATFORM}${FN_OPT}${FN_TOOLS}.$BITS bin/$BUILD_TYPE
+
