@@ -11,30 +11,27 @@ stages:
 build:
   image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
   stage: build
-  #tags:
-  #  - multicore
+  tags:
+    - multicore
   variables:
     GODOT_DOWNLOAD_URL: "https://github.com/godotengine/godot/archive/3.3.4-stable.tar.gz"
   parallel:
     matrix:
       - BUILD_TYPE:
-        #- linux-editor-64
-        #- linux-export-template-debug-64
+        - linux-editor-64
+        - linux-export-template-debug-64
         - linux-export-template-release-64
-        #- windows-editor-64
-        #- windows-export-template-debug-64
-        #- windows-export-template-release-64
-        #- macosx-editor-universal
-        #- macosx-export-template-debug-universal
-        #- macosx-export-template-release-universal
-        #- html5-export-template-debug
-        #- html5-export-template-release
+        - windows-editor-64
+        - windows-export-template-debug-64
+        - windows-export-template-release-64
+        - macosx-editor-universal
+        - macosx-export-template-debug-universal
+        - macosx-export-template-release-universal
+        - html5-export-template-debug
+        - html5-export-template-release
   script:
-    #- podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
-    #- ./scripts/build-godot.sh
-    - mkdir -p build/godot/bin
-    - touch build/godot/bin/linux-editor
-    - touch build/godot/bin/linux-export-template
+    - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
+    - ./scripts/build-godot.sh
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
       when: always
@@ -51,8 +48,7 @@ upload:
   stage: upload
   image: ubuntu:20.04
   variables:
-    #PLATFORMS: "linux windows macosx html5"
-    PLATFORMS: "linux"
+    PLATFORMS: "linux windows macosx html5"
   before_script:
     - apt-get update
     - apt-get install -y --no-install-recommends curl zip ca-certificates
@@ -71,9 +67,9 @@ release:
     - |
       release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
         --assets-link "{\"name\":\"linux-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-linux-${CI_COMMIT_TAG}.zip\"}"
-#        --assets-link "{\"name\":\"windows-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-windows-${CI_COMMIT_TAG}.zip\"}" \
-#        --assets-link "{\"name\":\"macosx-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-macosx-${CI_COMMIT_TAG}.zip\"}" \
-#        --assets-link "{\"name\":\"html5-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-html5-${CI_COMMIT_TAG}.zip\"}"
+        --assets-link "{\"name\":\"windows-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-windows-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"macosx-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-macosx-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"html5-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-html5-${CI_COMMIT_TAG}.zip\"}"
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
 
