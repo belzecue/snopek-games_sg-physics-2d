@@ -49,7 +49,7 @@ build:
 
 upload:
   stage: upload
-  image: ubuntu:20.4
+  image: ubuntu:20.04
   variables:
     #PLATFORMS: "linux windows macosx html5"
     PLATFORMS: "linux"
