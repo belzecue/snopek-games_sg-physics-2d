@@ -2,6 +2,7 @@ image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
 
 stages:
   - build
+  - upload
 
 build:
   image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
@@ -16,14 +17,14 @@ build:
         - linux-editor-64
         - linux-export-template-debug-64
         - linux-export-template-release-64
-        - windows-editor-64
-        - windows-export-template-debug-64
-        - windows-export-template-release-64
-        - macosx-editor-universal
-        - macosx-export-template-debug-universal
-        - macosx-export-template-release-universal
-        - html5-export-template-debug
-        - html5-export-template-release
+        #- windows-editor-64
+        #- windows-export-template-debug-64
+        #- windows-export-template-release-64
+        #- macosx-editor-universal
+        #- macosx-export-template-debug-universal
+        #- macosx-export-template-release-universal
+        #- html5-export-template-debug
+        #- html5-export-template-release
   script:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
@@ -38,3 +39,15 @@ build:
     paths:
       - build/godot/bin
 
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  variables:
+    #PLATFORMS: "linux windows macosx html5"
+    PLATFORMS: "linux"
+  script:
+	- cd build/godot/bin
+	- for platform in $PLATFORMS; do fn="$platform-$CI_COMMIT_TAG.zip"; zip $fn && curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $fn ${PACKAGE_REGISTRY_URL}/$fn && rm $fn; done
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
+ 
