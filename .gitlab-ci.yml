@@ -1,8 +1,12 @@
 image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
 
+variables:
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/myawesomerelease/${CI_COMMIT_TAG}"
+
 stages:
   - build
   - upload
+  - release
 
 build:
   image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
@@ -52,4 +56,16 @@ upload:
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
  
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${linux-$CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${linux-$CI_COMMIT_TAG}\"}"
+#        --assets-link "{\"name\":\"${windows-$CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${windows-$CI_COMMIT_TAG}\"}" \
+#        --assets-link "{\"name\":\"${macosx-$CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${macosx-$CI_COMMIT_TAG}\"}" \
+#        --assets-link "{\"name\":\"${html5-$CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${html5-$CI_COMMIT_TAG}\"}" \
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
 
