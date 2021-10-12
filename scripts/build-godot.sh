@@ -66,7 +66,7 @@ case "$BUILD_TYPE" in
 		PLATFORM="javascript"
 		;;
 	*)
-		die "Unknown BUILD_TYPE: $BUILD_TYPE"
+		die "Unable to identify platform from BUILD_TYPE: $BUILD_TYPE"
 		;;
 esac
 
@@ -100,13 +100,13 @@ case "$BUILD_TYPE" in
 		FN_TOOLS=".tools"
 		;;
 
-	*-export-template-debug*)
-		TARGET="export-template-debug"
+	*-export-template-release*)
+		TARGET="export-template-release"
 		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
 		;;
 
-	*-export-template-release*)
-		TARGET="export-template-release"
+	*-export-template-debug*)
+		TARGET="export-template-debug"
 		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
 		FN_OPT=".opt.debug"
 		;;

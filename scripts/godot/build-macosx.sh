@@ -4,17 +4,17 @@ OPTS="-j${NUM_CORES} osxcross_sdk=darwin20.2"
 STRIP="x86_64-apple-darwin20.2-strip -u -r"
 
 case "$BUILD_TYPE" in
-	macosx-x86-64)
+	*-x86-64)
 		ARCH=x86_64
 		;;
-	macosx-arm64)
+	*-arm64)
 		ARCH=arm64
 		;;
-	macosx-universal)
+	*-universal)
 		ARCH=universal
 		;;
 	*)
-		echo "Unkown BUILD_TYPE: $BUILD_TYPE"
+		echo "Unable to identify architecture from BUILD_TYPE: $BUILD_TYPE"
 		exit 1
 		;;
 esac
