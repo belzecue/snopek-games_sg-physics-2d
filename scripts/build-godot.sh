@@ -100,15 +100,15 @@ case "$BUILD_TYPE" in
 		FN_TOOLS=".tools"
 		;;
 
-	*-export-template-release*)
-		TARGET="export-template-release"
-		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
-		;;
-
 	*-export-template-debug*)
 		TARGET="export-template-debug"
 		SCONS_OPTS="$SCONS_OPTS tools=no  target=release_debug"
 		FN_OPT=".opt.debug"
+		;;
+
+	*-export-template-release*)
+		TARGET="export-template-release"
+		SCONS_OPTS="$SCONS_OPTS tools=no  target=release"
 		;;
 	
 	*)
