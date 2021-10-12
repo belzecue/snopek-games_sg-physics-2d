@@ -30,8 +30,11 @@ build:
         #- html5-export-template-debug
         #- html5-export-template-release
   script:
-    - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
-    - ./scripts/build-godot.sh
+    #- podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
+    #- ./scripts/build-godot.sh
+    - mkdir -p build/godot/bin
+    - touch build/godot/bin/linux-editor
+    - touch build/godot/bin/linux-export-template
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
       when: always
@@ -51,11 +54,11 @@ upload:
     #PLATFORMS: "linux windows macosx html5"
     PLATFORMS: "linux"
   before_script:
-    - apt-get update -qq && apt-get install -y -qq zip
+    - apk add --no-cache zip
   script:
     - cd build/godot/bin
     - |
-      for platform in $PLATFORMS; do fn="$platform-$CI_COMMIT_TAG.zip"; zip $fn && curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $fn ${PACKAGE_REGISTRY_URL}/$fn && rm $fn; done
+      for platform in $PLATFORMS; do fn="$platform-$CI_COMMIT_TAG.zip"; zip $fn $platform-* && curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $fn ${PACKAGE_REGISTRY_URL}/$fn && rm $fn; done
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
  
