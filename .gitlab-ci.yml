@@ -18,8 +18,8 @@ build:
   parallel:
     matrix:
       - BUILD_TYPE:
-        - linux-editor-64
-        - linux-export-template-debug-64
+        #- linux-editor-64
+        #- linux-export-template-debug-64
         - linux-export-template-release-64
         #- windows-editor-64
         #- windows-export-template-debug-64
@@ -33,8 +33,8 @@ build:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
   rules:
-  #  - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
-  #    when: always
+    - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
+      when: always
     - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
     - if: '$GODOT_BUILD_REGISTRY && $GODOT_BUILD_REGISTRY_USERNAME && $GODOT_BUILD_REGISTRY_PASSWORD'
   #    changes:
@@ -50,6 +50,8 @@ upload:
   variables:
     #PLATFORMS: "linux windows macosx html5"
     PLATFORMS: "linux"
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq zip
   script:
     - cd build/godot/bin
     - |
