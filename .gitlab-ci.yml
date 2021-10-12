@@ -28,11 +28,11 @@ build:
     - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
     - ./scripts/build-godot.sh
   rules:
-    - if: '$GODOT_BUILD_REGISTRY == null || $GODOT_BUILD_REGISTRY_USERNAME == null || $GODOT_BUILD_REGISTRY_PASSWORD == null'
-      when: never
   #  - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
-  #  - changes:
-  #    - godot/**/*
+  #    when: always
+    - if: '$GODOT_BUILD_REGISTRY && $GODOT_BUILD_REGISTRY_USERNAME && $GODOT_BUILD_REGISTRY_PASSWORD'
+  #    changes:
+  #      - godot/**/*
   artifacts:
     name: sg-physics-2d-$BUILD_TYPE
     paths:
