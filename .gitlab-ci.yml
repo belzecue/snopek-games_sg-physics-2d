@@ -46,6 +46,8 @@ build:
 upload:
   stage: upload
   image: curlimages/curl:latest
+  dependencies:
+    - build
   variables:
     #PLATFORMS: "linux windows macosx html5"
     PLATFORMS: "linux"
