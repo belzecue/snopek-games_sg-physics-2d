@@ -35,6 +35,7 @@ build:
   rules:
   #  - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
   #    when: always
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
     - if: '$GODOT_BUILD_REGISTRY && $GODOT_BUILD_REGISTRY_USERNAME && $GODOT_BUILD_REGISTRY_PASSWORD'
   #    changes:
   #      - godot/**/*
@@ -46,8 +47,6 @@ build:
 upload:
   stage: upload
   image: curlimages/curl:latest
-  dependencies:
-    - build
   variables:
     #PLATFORMS: "linux windows macosx html5"
     PLATFORMS: "linux"
