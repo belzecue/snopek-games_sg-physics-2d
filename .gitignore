@@ -1,4 +1,7 @@
+/build/
+
 *.o
 *.pyc
 *.bc
 *.obj
+*.tmp

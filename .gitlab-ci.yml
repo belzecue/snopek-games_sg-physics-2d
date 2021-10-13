@@ -1,0 +1,75 @@
+image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
+
+variables:
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/precompiled-binaries/${CI_COMMIT_TAG}"
+
+stages:
+  - build
+  - upload
+  - release
+
+build:
+  image: registry.gitlab.com/snopek-games/godot-builder-docker:latest
+  stage: build
+  tags:
+    - multicore
+  variables:
+    GODOT_DOWNLOAD_URL: "https://github.com/godotengine/godot/archive/3.3.4-stable.tar.gz"
+  parallel:
+    matrix:
+      - BUILD_TYPE:
+        - linux-editor-64
+        - linux-export-template-debug-64
+        - linux-export-template-release-64
+        - windows-editor-64
+        - windows-export-template-debug-64
+        - windows-export-template-release-64
+        - macosx-editor-universal
+        - macosx-export-template-debug-universal
+        - macosx-export-template-release-universal
+        - html5-export-template-debug
+        - html5-export-template-release
+  script:
+    - podman login "$GODOT_BUILD_REGISTRY" $PODMAN_OPTS --username="$GODOT_BUILD_REGISTRY_USERNAME" --password="$GODOT_BUILD_REGISTRY_PASSWORD"
+    - ./scripts/build-godot.sh
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[build godot\]/'
+      when: always
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
+    - if: '$GODOT_BUILD_REGISTRY && $GODOT_BUILD_REGISTRY_USERNAME && $GODOT_BUILD_REGISTRY_PASSWORD'
+      changes:
+        - godot/**/*
+  artifacts:
+    name: sg-physics-2d-$BUILD_TYPE
+    paths:
+      - build/godot/bin
+
+upload:
+  stage: upload
+  image: ubuntu:20.04
+  variables:
+    PLATFORMS: "linux windows macosx html5"
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends curl zip ca-certificates
+  script:
+    - cd build/godot/bin
+    - |
+      for platform in $PLATFORMS; do fn="sg-physics-2d-$platform-$CI_COMMIT_TAG.zip"; zip $fn $platform-* && curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $fn ${PACKAGE_REGISTRY_URL}/$fn && rm $fn; done
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
+ 
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  dependencies: []
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"linux-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-linux-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"windows-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-windows-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"macosx-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-macosx-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"html5-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/sg-physics-2d-html5-${CI_COMMIT_TAG}.zip\"}"
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
+
