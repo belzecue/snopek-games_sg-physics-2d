@@ -56,19 +56,36 @@ void SGWorld2DInternal::remove_body(SGBody2DInternal *p_body) {
 	p_body->remove_from_broadphase();
 }
 
-bool SGWorld2DInternal::overlaps(SGCollisionObject2DInternal *p_object1, SGCollisionObject2DInternal *p_object2, SGWorld2DInternal::OverlapInfo *p_info) const {
+bool SGWorld2DInternal::overlaps(SGCollisionObject2DInternal *p_object1, SGCollisionObject2DInternal *p_object2, SGWorld2DInternal::BodyOverlapInfo *p_info) const {
+	bool overlapping = false;
+
+	SGWorld2DInternal::ShapeOverlapInfo shape_overlap_info;
+	fixed longest_separation_squared = fixed::ZERO;
+
 	for (const List<SGShape2DInternal *>::Element *S1 = p_object1->get_shapes().front(); S1; S1 = S1->next()) {
 		for (const List<SGShape2DInternal *>::Element *S2 = p_object2->get_shapes().front(); S2; S2 = S2->next()) {
-			if (overlaps(S1->get(), S2->get(), p_info)) {
-				return true;
+			if (overlaps(S1->get(), S2->get(), &shape_overlap_info)) {
+				overlapping = true;
+				if (!p_info) {
+					return overlapping;
+				}
+
+				fixed separation_length_squared = shape_overlap_info.separation.length_squared();
+				if (separation_length_squared > longest_separation_squared) {
+					longest_separation_squared = separation_length_squared;
+					p_info->collider = p_object2;
+					p_info->collider_shape = S2->get();
+					p_info->local_shape = S1->get();
+					p_info->separation = shape_overlap_info.separation;
+				}
 			}
 		}
 	}
 
-	return false;
+	return overlapping;
 }
 
-bool SGWorld2DInternal::overlaps(SGShape2DInternal *p_shape1, SGShape2DInternal *p_shape2, SGWorld2DInternal::OverlapInfo *p_info) const {
+bool SGWorld2DInternal::overlaps(SGShape2DInternal *p_shape1, SGShape2DInternal *p_shape2, SGWorld2DInternal::ShapeOverlapInfo *p_info) const {
 	using ShapeType = SGShape2DInternal::ShapeType;
 
 	ShapeType shape1_type = p_shape1->get_shape_type();
@@ -114,14 +131,17 @@ bool SGWorld2DInternal::overlaps(SGShape2DInternal *p_shape1, SGShape2DInternal 
 	if (overlapping && p_info) {
 		// Make sure the info is from the perspective of the first shape.
 		p_info->shape = p_shape2;
-		p_info->seperation = swap ? -overlap_info.separation : overlap_info.separation;
+		p_info->separation = swap ? -overlap_info.separation : overlap_info.separation;
 	}
 
 	return overlapping;
 }
 
-bool SGWorld2DInternal::get_best_overlapping_body(SGCollisionObject2DInternal *p_object, SGWorld2DInternal::OverlapInfo *p_info) const {
+bool SGWorld2DInternal::get_best_overlapping_body(SGCollisionObject2DInternal *p_object, SGWorld2DInternal::BodyOverlapInfo *p_info, SGWorld2DInternal::CompareCallback p_compare) const {
 	bool overlapping = false;
+
+	SGWorld2DInternal::BodyOverlapInfo test_overlap_info;
+	fixed longest_separation_squared = fixed::ZERO;
 
 	Set<SGCollisionObject2DInternal *> *nearby_bodies = broadphase->find_nearby(p_object->get_bounds(), SGCollisionObject2DInternal::OBJECT_BODY);
 	for (Set<SGCollisionObject2DInternal *>::Element *E = nearby_bodies->front(); E; E = E->next()) {
@@ -134,12 +154,21 @@ bool SGWorld2DInternal::get_best_overlapping_body(SGCollisionObject2DInternal *p
 			continue;
 		}
 
-		overlapping = overlaps(p_object, other, p_info);
-		if (overlapping) {
-			// @todo We should return the info for the collision with the deepest penetration.
-			// For now, just return the info for the first overlapping shape.
-			p_info->body = other;
-			break;
+		if (overlaps(p_object, other, &test_overlap_info)) {
+			overlapping = true;
+
+			fixed separation_length_squared = test_overlap_info.separation.length_squared();
+			if (separation_length_squared > longest_separation_squared) {
+				longest_separation_squared = separation_length_squared;
+				*p_info = test_overlap_info;
+			}
+			// If we find another with the same separation, use the p_compare
+			// callback to decide which is first.
+			else if (separation_length_squared == longest_separation_squared && p_compare != nullptr && p_info->collider != nullptr) {
+				if (p_compare(other, p_info->collider)) {
+					*p_info = test_overlap_info;
+				}
+			}
 		}
 	}
 	memdelete(nearby_bodies);

@@ -31,14 +31,27 @@
 #include "../../internal/sg_world_2d_internal.h"
 
 void SGArea2D::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_overlapping_areas"), &SGArea2D::get_overlapping_areas);
-	ClassDB::bind_method(D_METHOD("get_overlapping_bodies"), &SGArea2D::get_overlapping_bodies);
+	ClassDB::bind_method(D_METHOD("get_overlapping_areas", "sort"), &SGArea2D::get_overlapping_areas, DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("get_overlapping_bodies", "sort"), &SGArea2D::get_overlapping_bodies, DEFVAL(true));
 }
 
-Array SGArea2D::get_overlapping_areas() const {
+struct SGCollisionObjectComparator {
+	bool operator()(const SGCollisionObject2DInternal *p_a, const SGCollisionObject2DInternal *p_b) const {
+		SGCollisionObject2D *a = Object::cast_to<SGCollisionObject2D>((Object *)p_a->get_data());
+		SGCollisionObject2D *b = Object::cast_to<SGCollisionObject2D>((Object *)p_b->get_data());
+		return b->is_greater_than(a);
+	}
+};
+
+Array SGArea2D::get_overlapping_areas(bool sort) const {
 	Array ret;
 
 	List<SGArea2DInternal *> *overlapping_areas = SGWorld2DInternal::get_singleton()->get_overlapping_areas((SGArea2DInternal *)internal);
+
+	if (sort && overlapping_areas->size() > 1) {
+		overlapping_areas->sort_custom<SGCollisionObjectComparator>();
+	}
+
 	for (List<SGArea2DInternal *>::Element *E = overlapping_areas->front(); E; E = E->next()) {
 		SGArea2D *overlapping_area = Object::cast_to<SGArea2D>((Object *)E->get()->get_data());
 		if (overlapping_area) {
@@ -50,10 +63,15 @@ Array SGArea2D::get_overlapping_areas() const {
 	return ret;
 }
 
-Array SGArea2D::get_overlapping_bodies() const {
+Array SGArea2D::get_overlapping_bodies(bool sort) const {
 	Array ret;
 
 	List<SGBody2DInternal *> *overlapping_bodies = SGWorld2DInternal::get_singleton()->get_overlapping_bodies((SGArea2DInternal *)internal);
+
+	if (sort && overlapping_bodies->size() > 1) {
+		overlapping_bodies->sort_custom<SGCollisionObjectComparator>();
+	}
+
 	for (List<SGBody2DInternal *>::Element *E = overlapping_bodies->front(); E; E = E->next()) {
 		SGBody2DInternal *overlapping_body = E->get();
 		if (overlapping_body->get_body_type() == SGBody2DInternal::BODY_STATIC) {

@@ -55,7 +55,9 @@ SGFixedTransform2DInternal SGFixedTransform2DInternal::affine_inverse() const {
 }
 
 void SGFixedTransform2DInternal::rotate(fixed p_phi) {
+	SGFixedVector2Internal scale = get_scale();
 	*this = SGFixedTransform2DInternal(p_phi, SGFixedVector2Internal()) * (*this);
+	set_scale(scale);
 }
 
 fixed SGFixedTransform2DInternal::get_rotation() const {

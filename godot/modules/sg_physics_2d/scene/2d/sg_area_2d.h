@@ -35,8 +35,8 @@ protected:
 	static void _bind_methods();
 
 public:
-	Array get_overlapping_areas() const;
-	Array get_overlapping_bodies() const;
+	Array get_overlapping_areas(bool sort = true) const;
+	Array get_overlapping_bodies(bool sort = true) const;
 
 	SGArea2D();
 	~SGArea2D();

@@ -43,14 +43,25 @@ class SGWorld2DInternal {
 	static SGWorld2DInternal *singleton;
 
 public:
-	struct OverlapInfo {
-		SGBody2DInternal *body;
+	struct ShapeOverlapInfo {
 		SGShape2DInternal *shape;
-		SGFixedVector2Internal seperation;
+		SGFixedVector2Internal separation;
 
-		OverlapInfo() {
-			body = nullptr;
+		ShapeOverlapInfo() {
 			shape = nullptr;
+		}
+	};
+
+	struct BodyOverlapInfo {
+		SGCollisionObject2DInternal *collider;
+		SGShape2DInternal *collider_shape;
+		SGShape2DInternal *local_shape;
+		SGFixedVector2Internal separation;
+
+		BodyOverlapInfo() {
+			collider = nullptr;
+			collider_shape = nullptr;
+			local_shape = nullptr;
 		}
 	};
 
@@ -64,6 +75,8 @@ public:
 		}
 	};
 
+	typedef bool (*CompareCallback)(SGCollisionObject2DInternal*, SGCollisionObject2DInternal*);
+
 	static SGWorld2DInternal *get_singleton();
 
 	_FORCE_INLINE_ const List<SGBody2DInternal *> &get_bodies() const { return bodies; }
@@ -75,10 +88,10 @@ public:
 	void add_body(SGBody2DInternal *p_body);
 	void remove_body(SGBody2DInternal *p_body);
 
-	bool overlaps(SGCollisionObject2DInternal *p_object1, SGCollisionObject2DInternal *p_object2, OverlapInfo *p_info = nullptr) const;
-	bool overlaps(SGShape2DInternal *p_shape1, SGShape2DInternal *p_shape2, OverlapInfo *p_info = nullptr) const;
+	bool overlaps(SGCollisionObject2DInternal *p_object1, SGCollisionObject2DInternal *p_object2, BodyOverlapInfo *p_info = nullptr) const;
+	bool overlaps(SGShape2DInternal *p_shape1, SGShape2DInternal *p_shape2, ShapeOverlapInfo *p_info = nullptr) const;
 
-	bool get_best_overlapping_body(SGCollisionObject2DInternal *p_object, OverlapInfo *p_info = nullptr) const;
+	bool get_best_overlapping_body(SGCollisionObject2DInternal *p_object, BodyOverlapInfo *p_info, CompareCallback p_compare = nullptr) const;
 
 	List<SGArea2DInternal *> *get_overlapping_areas(SGCollisionObject2DInternal *p_object) const;
 	List<SGBody2DInternal *> *get_overlapping_bodies(SGCollisionObject2DInternal *p_object) const;
