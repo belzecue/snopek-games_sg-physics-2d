@@ -137,18 +137,18 @@ also `SGFixedNode2D`s. So, if you have a `Node2D` that's a parent of a
 
 Godot's builtin physics engine does a whole bunch of things automatically:
 
- 1. At the end of `_physics_process()` it sync's the node's position information
-    into the physics engine.
- 2. Does all the physics calculations, and sync's any changes back from the
+ 1. After `_physics_process()` it sync's the node's position information into
+    the physics engine.
+ 2. It does all the physics calculations, and sync's any changes back from the
     physics engine into the nodes.
  3. It emits a bunch of signals if certain collisions have occured (for example,
-    a body entering an area)
- 4. Then it calls `_physics_process()` again
+    a body entering an area).
+ 4. Then it calls `_physics_process()`, and starts over again.
 
-**However, SG Physics 2D won't do anything until you ask it to!**
+_However, SG Physics 2D won't do anything until you ask it to!_
 
 So, for example, if you change the `fixed_position` on a physics node (ie.
-`SGKinematicBody2D` or `SGArea2D`) you need to call its
+`SGKinematicBody2D` or `SGArea2D`), you need to manually call its
 `sync_to_physics_engine()` method so the physics engine knows about its new
 position. The same goes for changing its rotation, scale or any of its shapes.
 
@@ -158,7 +158,7 @@ you need to explicitly call `area.get_overlapping_bodies()`.
 By allowing the developer to fully control when and how physics happens, you can
 make your game logic fully deterministic.
 
-(BTW, just using a deterministic physics engine won't automaticalyl make your
+(BTW, just using a deterministic physics engine won't automatically make your
 whole game deterministic! You will need to make sure that all the rest of your
 game logic is deterministic too.)
 
@@ -171,11 +171,11 @@ or change shape/size.
 ### Don't convert floats to fixed-point in game! ###
 
 Any floating point calculation you do in game could give a non-determistic
-result!
+result.
 
-So, any math that with a fractional component that is important to your game
-logic will need to be done in fixed-point. You'll need to get very used to the
-look of fixed-point numbers. :-)
+So, any math wath a fractional component that is important to your game logic
+will need to be done in fixed-point. You'll need to get very used to the look of
+fixed-point numbers. :-)
 
 One tip: Godot can evaluate math expressions in the editor. So, you can type in
 `16*65536`, select it, and then press Ctrl+Shift+E, and Godot will turn that
@@ -190,6 +190,9 @@ const ONE_POINT_FIVE = 98304
 func _physics_process(delta: float) -> void:
 	var some_var = vector.mul(ONE_POINT_FIVE)
 ```
+
+However, if you have parts of the game that are purely cosmetic, you're safe to
+use normal floating-point math for those.
 
 License
 -------
