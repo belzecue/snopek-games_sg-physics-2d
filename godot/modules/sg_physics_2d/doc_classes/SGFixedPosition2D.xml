@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGFixedPosition2D" inherits="SGFixedNode2D" version="3.4">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="fixed_position" type="SGFixedVector2" setter="set_fixed_position" getter="get_fixed_position" override="true" />
+		<member name="fixed_scale" type="SGFixedVector2" setter="set_fixed_scale" getter="get_fixed_scale" override="true" />
+	</members>
+	<constants>
+	</constants>
+</class>

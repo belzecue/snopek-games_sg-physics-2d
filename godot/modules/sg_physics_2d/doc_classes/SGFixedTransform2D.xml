@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGFixedTransform2D" inherits="Reference" version="3.4">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="affine_inverse" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="basis_xform" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="basis_xform_inv" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="copy" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="get_rotation" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_scale" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="interpolate_with" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="transform" type="SGFixedTransform2D" />
+			<argument index="1" name="arg1" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="inverse" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="is_equal_approx" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="transform" type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="mul" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="transform" type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="orthonormalized" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<description>
+			</description>
+		</method>
+		<method name="rotated" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="radians" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="scaled" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="scale" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="translated" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="offset" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="xform" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="xform_inv" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="origin" type="SGFixedVector2" setter="set_origin" getter="get_origin">
+		</member>
+		<member name="x" type="SGFixedVector2" setter="set_x" getter="get_x">
+		</member>
+		<member name="y" type="SGFixedVector2" setter="set_y" getter="get_y">
+		</member>
+	</members>
+	<signals>
+		<signal name="changed">
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>

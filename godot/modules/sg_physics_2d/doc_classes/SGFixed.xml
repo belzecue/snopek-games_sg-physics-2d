@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGFixed" inherits="Object" version="3.4">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="acos" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="asin" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="atan" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="atan2" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_y_value" type="int" />
+			<argument index="1" name="fixed_x_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="cos" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="div" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_one" type="int" />
+			<argument index="1" name="fixed_two" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="from_float" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="float_value" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="from_float_rect2" qualifiers="const">
+			<return type="SGFixedRect2" />
+			<argument index="0" name="float_rect" type="Rect2" />
+			<description>
+			</description>
+		</method>
+		<method name="from_float_vector2" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="float_vector" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="from_int" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="int_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="mul" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_one" type="int" />
+			<argument index="1" name="fixed_two" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="rect2" qualifiers="const">
+			<return type="SGFixedRect2" />
+			<argument index="0" name="position" type="SGFixedVector2" />
+			<argument index="1" name="size" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="sin" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sqrt" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="tan" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="to_float" qualifiers="const">
+			<return type="float" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="to_int" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="fixed_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="transform2d" qualifiers="const">
+			<return type="SGFixedTransform2D" />
+			<argument index="0" name="rotation" type="int" />
+			<argument index="1" name="origin" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="vector2" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="fixed_x" type="int" />
+			<argument index="1" name="fixed_y" type="int" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="ONE" value="65536">
+		</constant>
+		<constant name="HALF" value="32768">
+		</constant>
+		<constant name="TWO" value="131072">
+		</constant>
+		<constant name="NEG_ONE" value="-65536">
+		</constant>
+		<constant name="PI" value="205887">
+		</constant>
+		<constant name="TAU" value="411774">
+		</constant>
+		<constant name="PI_DIV_4" value="51471">
+		</constant>
+		<constant name="EPSILON" value="1">
+		</constant>
+		<constant name="ARITHMETIC_OVERFLOW" value="0">
+		</constant>
+	</constants>
+</class>

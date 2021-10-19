@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGFixedVector2" inherits="Reference" version="3.4">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="abs" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="add" qualifiers="const">
+			<return type="Variant" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="angle" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="angle_to" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="angle_to_point" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="bounce" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="normal" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="copy" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="cross" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="direction_to" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="distance_squared_to" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="distance_to" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="div" qualifiers="const">
+			<return type="Variant" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="dot" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="from_float">
+			<return type="void" />
+			<argument index="0" name="float_vector" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="iadd">
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="idiv">
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="imul">
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="is_equal_approx" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="is_normalized" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="isub">
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="length" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="length_squared" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="linear_interpolate" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="other_vector" type="SGFixedVector2" />
+			<argument index="1" name="weight" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="mul" qualifiers="const">
+			<return type="Variant" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="normalized" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="reflect" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="normal" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="rotate">
+			<return type="void" />
+			<argument index="0" name="radians" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="rotated" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="radians" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="slide" qualifiers="const">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="normal" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="sub" qualifiers="const">
+			<return type="Variant" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="to_float" qualifiers="const">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="x" type="int" setter="set_x" getter="get_x" default="0">
+		</member>
+		<member name="y" type="int" setter="set_y" getter="get_y" default="0">
+		</member>
+	</members>
+	<signals>
+		<signal name="changed">
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>

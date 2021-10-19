@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGRectangleShape2D" inherits="SGShape2D" version="3.4">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="extents" type="SGFixedVector2" setter="set_extents" getter="get_extents">
+		</member>
+		<member name="extents_x" type="int" setter="_set_extents_x" getter="_get_extents_x" default="655360">
+		</member>
+		<member name="extents_y" type="int" setter="_set_extents_y" getter="_get_extents_y" default="655360">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
