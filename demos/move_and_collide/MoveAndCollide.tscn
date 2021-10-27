@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://demos/MoveAndCollide.gd" type="Script" id=1]
-[ext_resource path="res://demos/tank_blue.png" type="Texture" id=3]
+[ext_resource path="res://demos/move_and_collide/MoveAndCollide.gd" type="Script" id=1]
+[ext_resource path="res://demos/move_and_collide/tank_blue.png" type="Texture" id=2]
 
 [sub_resource type="SGRectangleShape2D" id=1]
 extents_x = 3276800
@@ -66,7 +66,7 @@ collision_mask = 0
 
 [node name="Sprite" type="Sprite" parent="Character"]
 rotation = -1.5708
-texture = ExtResource( 3 )
+texture = ExtResource( 2 )
 
 [node name="SGCollisionPolygon2D" type="SGCollisionPolygon2D" parent="Character"]
 fixed_polygon_pairs = [ [ 786416, -1376264 ], [ 1245176, -655372 ], [ 1245190, 720884 ], [ 786446, 1376248 ], [ -1179634, 1376268 ], [ -1507318, 983056 ], [ -1507340, -983024 ], [ -1179664, -1376244 ] ]
