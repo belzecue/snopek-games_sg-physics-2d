@@ -82,31 +82,19 @@ void SGFixedTransform2D::_vector_changed() {
 	emit_signal("changed");
 }
 
-Ref<SGFixedVector2> SGFixedTransform2D::get_x() const {
-	return x;
-}
-
 void SGFixedTransform2D::set_x(const Ref<SGFixedVector2> &p_x) {
 	ERR_FAIL_COND(!p_x.is_valid());
-	x = p_x;
-}
-
-Ref<SGFixedVector2> SGFixedTransform2D::get_y() const {
-	return y;
+	x->set_internal(p_x->get_internal());
 }
 
 void SGFixedTransform2D::set_y(const Ref<SGFixedVector2> &p_y) {
 	ERR_FAIL_COND(!p_y.is_valid());
-	y = p_y;
-}
-
-Ref<SGFixedVector2> SGFixedTransform2D::get_origin() const {
-	return origin;
+	y->set_internal(p_y->get_internal());
 }
 
 void SGFixedTransform2D::set_origin(const Ref<SGFixedVector2> &p_origin) {
 	ERR_FAIL_COND(!p_origin.is_valid());
-	origin = p_origin;
+	origin->set_internal(p_origin->get_internal());
 }
 
 Ref<SGFixedTransform2D> SGFixedTransform2D::inverse() const {

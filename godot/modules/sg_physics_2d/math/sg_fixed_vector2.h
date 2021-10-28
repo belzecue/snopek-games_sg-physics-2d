@@ -29,10 +29,18 @@
 
 #include "../internal/sg_fixed_vector2_internal.h"
 
+class SGFixedNode2D;
+
 class SGFixedVector2 : public Reference {
 
 	GDCLASS(SGFixedVector2, Reference);
 
+	friend SGFixedNode2D;
+
+	// Tightly couple with SGFixedNode2D for the fixed_position use-case
+	// because it gives a sizeable performance boost for a very common
+	// operation (modifying a SGFixedNode2D's fixed_position).
+	SGFixedNode2D *position_owner;
 	SGFixedVector2Internal value;
 
 protected:
@@ -109,9 +117,12 @@ public:
 		return Ref<SGFixedVector2>(memnew(SGFixedVector2(p_internal)));
 	}
 
-	SGFixedVector2() { }
+	SGFixedVector2() {
+		position_owner = nullptr;
+	}
 	SGFixedVector2(const SGFixedVector2Internal& p_internal_vector) {
 		value = p_internal_vector;
+		position_owner = nullptr;
 	}
 
 	~SGFixedVector2() { };

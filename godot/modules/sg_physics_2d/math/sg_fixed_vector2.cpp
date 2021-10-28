@@ -23,6 +23,8 @@
 
 #include "sg_fixed_vector2.h"
 
+#include "../scene/2d/sg_fixed_node_2d.h"
+
 void SGFixedVector2::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_x"), &SGFixedVector2::get_x);
 	ClassDB::bind_method(D_METHOD("set_x", "x"), &SGFixedVector2::set_x);
@@ -73,8 +75,6 @@ void SGFixedVector2::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("from_float", "float_vector"), &SGFixedVector2::from_float);
 	ClassDB::bind_method(D_METHOD("to_float"), &SGFixedVector2::to_float);
-
-	ADD_SIGNAL(MethodInfo("changed"));
 }
 
 Variant SGFixedVector2::add(const Variant &p_other) const {
@@ -98,7 +98,9 @@ void SGFixedVector2::iadd(const Variant &p_other) {
 
 		value += other_vector->get_internal();
 	}
-	emit_signal("changed");
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 Variant SGFixedVector2::sub(const Variant &p_other) const {
@@ -122,7 +124,9 @@ void SGFixedVector2::isub(const Variant &p_other) {
 
 		value -= other_vector->get_internal();
 	}
-	emit_signal("changed");
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 Variant SGFixedVector2::mul(const Variant &p_other) const {
@@ -146,7 +150,9 @@ void SGFixedVector2::imul(const Variant &p_other) {
 
 		value *= other_vector->get_internal();
 	}
-	emit_signal("changed");
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 Variant SGFixedVector2::div(const Variant &p_other) const {
@@ -170,7 +176,9 @@ void SGFixedVector2::idiv(const Variant &p_other) {
 
 		value /= other_vector->get_internal();
 	}
-	emit_signal("changed");
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 Ref<SGFixedVector2> SGFixedVector2::copy() const {
@@ -224,7 +232,10 @@ Ref<SGFixedVector2> SGFixedVector2::direction_to(const Ref<SGFixedVector2> &p_ot
 
 void SGFixedVector2::rotate(int64_t p_rotation) {
 	value = value.rotated(fixed(p_rotation));
-	emit_signal("changed");
+
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 int64_t SGFixedVector2::angle() const {
@@ -279,7 +290,10 @@ bool SGFixedVector2::is_equal_approx(const Ref<SGFixedVector2> &p_other) const {
 void SGFixedVector2::from_float(Vector2 p_float_vector) {
 	value.x = fixed::from_float(p_float_vector.x);
 	value.y = fixed::from_float(p_float_vector.y);
-	emit_signal("changed");
+
+	if (position_owner) {
+		position_owner->_fixed_position_changed();
+	}
 }
 
 Vector2 SGFixedVector2::to_float() const {

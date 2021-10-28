@@ -35,11 +35,10 @@ class SGFixedNode2D : public Node2D {
 	GDCLASS(SGFixedNode2D, Node2D);
 
 	friend SGCollisionObject2D;
+	friend SGFixedVector2;
 
 	Ref<SGFixedTransform2D> fixed_transform;
-	Ref<SGFixedVector2> fixed_position;
 	Ref<SGFixedVector2> fixed_scale;
-	int64_t fixed_rotation;
 
 	bool updating_transform;
 
@@ -91,7 +90,6 @@ public:
 
 	void set_global_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_global_fixed_rotation() const;
-
 
 	SGFixedNode2D();
 	~SGFixedNode2D();

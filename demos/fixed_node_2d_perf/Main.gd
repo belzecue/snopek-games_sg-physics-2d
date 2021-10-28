@@ -1,5 +1,6 @@
 extends Node2D
 
+const FloatObject = preload("res://demos/fixed_node_2d_perf/FloatObject.tscn")
 const FixedObject = preload("res://demos/fixed_node_2d_perf/FixedObject.tscn")
 
 var min_timing := 1000000.0
@@ -17,6 +18,12 @@ func _ready() -> void:
 		obj.fixed_position = SGFixed.vector2(
 			SGFixed.from_int(randi() % int(viewport_size.x)),
 			SGFixed.from_int(randi() % int(viewport_size.y)))
+		
+#		var obj = FloatObject.instance()
+#		add_child(obj)
+#		obj.position = Vector2(
+#			randi() % int(viewport_size.x),
+#			randi() % int(viewport_size.y))
 
 func _physics_process(delta: float) -> void:
 	var timings := []
