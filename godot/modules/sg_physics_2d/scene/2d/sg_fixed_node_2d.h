@@ -40,12 +40,16 @@ class SGFixedNode2D : public Node2D {
 	Ref<SGFixedTransform2D> fixed_transform;
 	Ref<SGFixedVector2> fixed_scale;
 
+#ifdef TOOLS_ENABLED
 	bool updating_transform;
+#endif
 
 protected:
 	static void _bind_methods();
 
+#ifdef TOOLS_ENABLED
 	virtual void _changed_callback(Object *p_changed, const char *p_prop) override;
+#endif
 
 	_FORCE_INLINE_ SGFixedTransform2DInternal get_fixed_transform_internal() const { return fixed_transform->get_internal(); }
 	SGFixedTransform2DInternal get_global_fixed_transform_internal() const;

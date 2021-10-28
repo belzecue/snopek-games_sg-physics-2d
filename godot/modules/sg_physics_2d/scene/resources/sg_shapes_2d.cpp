@@ -102,7 +102,7 @@ void SGRectangleShape2D::draw(const RID &p_to_rid, const Color &p_color) {
 SGRectangleShape2D::SGRectangleShape2D() : SGShape2D(),
 	extents(Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed(655360), fixed(655360))))))
 {
-	extents->connect("changed", this, "emit_changed");
+	//extents->connect("changed", this, "emit_changed");
 }
 
 SGRectangleShape2D::~SGRectangleShape2D() {
