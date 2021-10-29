@@ -29,18 +29,13 @@
 
 #include "../internal/sg_fixed_vector2_internal.h"
 
-class SGFixedNode2D;
+class SGFixedVector2Watcher;
 
 class SGFixedVector2 : public Reference {
 
 	GDCLASS(SGFixedVector2, Reference);
 
-	friend SGFixedNode2D;
-
-	// Tightly couple with SGFixedNode2D for the fixed_position use-case
-	// because it gives a sizeable performance boost for a very common
-	// operation (modifying a SGFixedNode2D's fixed_position).
-	SGFixedNode2D *position_owner;
+	mutable SGFixedVector2Watcher *watcher;
 	SGFixedVector2Internal value;
 
 protected:
@@ -65,6 +60,10 @@ public:
 		value.x.value = 0;
 		value.y.value = 0;
 		emit_signal("changed");
+	}
+
+	_FORCE_INLINE_ void set_watcher(SGFixedVector2Watcher *p_watcher) const {
+		watcher = p_watcher;
 	}
 
 	Variant add(const Variant &p_other) const;
@@ -118,15 +117,23 @@ public:
 	}
 
 	SGFixedVector2() {
-		position_owner = nullptr;
+		watcher = nullptr;
 	}
 	SGFixedVector2(const SGFixedVector2Internal& p_internal_vector) {
 		value = p_internal_vector;
-		position_owner = nullptr;
+		watcher = nullptr;
 	}
 
 	~SGFixedVector2() { };
 
 };
+
+class SGFixedVector2Watcher {
+public:
+
+	virtual void fixed_vector2_changed(SGFixedVector2 *p_vector) = 0;
+
+};
+
 
 #endif

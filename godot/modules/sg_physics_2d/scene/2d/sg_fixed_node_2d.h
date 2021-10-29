@@ -31,7 +31,7 @@
 
 class SGCollisionObject2D;
 
-class SGFixedNode2D : public Node2D {
+class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 	GDCLASS(SGFixedNode2D, Node2D);
 
 	friend SGCollisionObject2D;
@@ -94,6 +94,8 @@ public:
 
 	void set_global_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_global_fixed_rotation() const;
+
+	void fixed_vector2_changed(SGFixedVector2 *p_vector);
 
 	SGFixedNode2D();
 	~SGFixedNode2D();

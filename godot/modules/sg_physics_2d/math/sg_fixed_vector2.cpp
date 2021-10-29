@@ -98,8 +98,8 @@ void SGFixedVector2::iadd(const Variant &p_other) {
 
 		value += other_vector->get_internal();
 	}
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 
@@ -124,8 +124,8 @@ void SGFixedVector2::isub(const Variant &p_other) {
 
 		value -= other_vector->get_internal();
 	}
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 
@@ -150,8 +150,8 @@ void SGFixedVector2::imul(const Variant &p_other) {
 
 		value *= other_vector->get_internal();
 	}
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 
@@ -176,8 +176,8 @@ void SGFixedVector2::idiv(const Variant &p_other) {
 
 		value /= other_vector->get_internal();
 	}
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 
@@ -233,8 +233,8 @@ Ref<SGFixedVector2> SGFixedVector2::direction_to(const Ref<SGFixedVector2> &p_ot
 void SGFixedVector2::rotate(int64_t p_rotation) {
 	value = value.rotated(fixed(p_rotation));
 
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 
@@ -291,8 +291,8 @@ void SGFixedVector2::from_float(Vector2 p_float_vector) {
 	value.x = fixed::from_float(p_float_vector.x);
 	value.y = fixed::from_float(p_float_vector.y);
 
-	if (position_owner) {
-		position_owner->_fixed_position_changed();
+	if (watcher) {
+		watcher->fixed_vector2_changed(this);
 	}
 }
 

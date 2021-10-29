@@ -40,7 +40,6 @@ void SGFixedNode2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_fixed_position"), &SGFixedNode2D::get_fixed_position);
 	ClassDB::bind_method(D_METHOD("set_fixed_position", "fixed_position"), &SGFixedNode2D::set_fixed_position);
-	ClassDB::bind_method(D_METHOD("_fixed_position_changed"), &SGFixedNode2D::_fixed_position_changed);
 
 	ClassDB::bind_method(D_METHOD("get_fixed_scale"), &SGFixedNode2D::get_fixed_scale);
 	ClassDB::bind_method(D_METHOD("set_fixed_scale", "fixed_scale"), &SGFixedNode2D::set_fixed_scale);
@@ -141,10 +140,7 @@ void SGFixedNode2D::_fixed_transform_changed() {
 
 void SGFixedNode2D::_set_fixed_position(const SGFixedVector2Internal &p_fixed_position) {
 	fixed_transform->get_origin()->set_internal(p_fixed_position);
-	_fixed_position_changed();
-}
 
-void SGFixedNode2D::_fixed_position_changed() {
 	START_UPDATING_TRANSFORM();
 	set_position(fixed_transform->get_origin()->to_float());
 	STOP_UPDATING_TRANSFORM();
@@ -279,9 +275,17 @@ int64_t SGFixedNode2D::get_global_fixed_rotation() const {
 	return get_global_fixed_transform_internal().get_rotation().value;
 }
 
+void SGFixedNode2D::fixed_vector2_changed(SGFixedVector2 *p_vector) {
+	if (p_vector == fixed_transform->get_origin().ptr()) {
+		START_UPDATING_TRANSFORM();
+		set_position(fixed_transform->get_origin()->to_float());
+		STOP_UPDATING_TRANSFORM();
+	}
+}
+
 SGFixedNode2D::SGFixedNode2D() {
 	fixed_transform = Ref<SGFixedTransform2D>(memnew(SGFixedTransform2D));
-	fixed_transform->get_origin()->position_owner = this;
+	fixed_transform->get_origin()->set_watcher(this);
 
 	fixed_scale = Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed::ONE, fixed::ONE))));
 
@@ -295,5 +299,5 @@ SGFixedNode2D::SGFixedNode2D() {
 }
 
 SGFixedNode2D::~SGFixedNode2D() {
-	fixed_transform->get_origin()->position_owner = nullptr;
+	fixed_transform->get_origin()->set_watcher(this);
 }
