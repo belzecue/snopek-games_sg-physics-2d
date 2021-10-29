@@ -39,6 +39,7 @@ class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 
 	Ref<SGFixedTransform2D> fixed_transform;
 	Ref<SGFixedVector2> fixed_scale;
+	bool fixed_xform_dirty;
 
 #ifdef TOOLS_ENABLED
 	bool updating_transform;
@@ -46,6 +47,7 @@ class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 
 protected:
 	static void _bind_methods();
+	void _notification(int p_what);
 
 #ifdef TOOLS_ENABLED
 	virtual void _changed_callback(Object *p_changed, const char *p_prop) override;

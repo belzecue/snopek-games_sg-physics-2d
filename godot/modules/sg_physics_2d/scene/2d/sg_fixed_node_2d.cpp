@@ -82,6 +82,19 @@ void SGFixedNode2D::_bind_methods() {
 
 }
 
+void SGFixedNode2D::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS:
+			if (fixed_xform_dirty) {
+				START_UPDATING_TRANSFORM();
+				set_transform(fixed_transform->to_float());
+				STOP_UPDATING_TRANSFORM();
+				fixed_xform_dirty = false;
+			}
+			break;
+	}
+}
+
 #ifdef TOOLS_ENABLED
 void SGFixedNode2D::_changed_callback(Object *p_changed, const char *p_prop) {
 	if (!updating_transform) {
@@ -140,10 +153,13 @@ void SGFixedNode2D::_fixed_transform_changed() {
 
 void SGFixedNode2D::_set_fixed_position(const SGFixedVector2Internal &p_fixed_position) {
 	fixed_transform->get_origin()->set_internal(p_fixed_position);
+	fixed_xform_dirty = true;
 
+/*
 	START_UPDATING_TRANSFORM();
 	set_position(fixed_transform->get_origin()->to_float());
 	STOP_UPDATING_TRANSFORM();
+	*/
 }
 
 void SGFixedNode2D::_fixed_scale_changed() {
@@ -194,11 +210,8 @@ Ref<SGFixedTransform2D> SGFixedNode2D::get_fixed_transform() const {
 void SGFixedNode2D::set_fixed_position(const Ref<SGFixedVector2> &p_fixed_position) {
 	ERR_FAIL_COND(!p_fixed_position.is_valid());
 	fixed_transform->get_origin()->set_internal(p_fixed_position->get_internal());
-
-	START_UPDATING_TRANSFORM();
-	set_position(p_fixed_position->to_float());
+	fixed_xform_dirty = true;
 	_change_notify("fixed_position");
-	STOP_UPDATING_TRANSFORM();
 }
 
 Ref<SGFixedVector2> SGFixedNode2D::get_fixed_position() {
@@ -277,9 +290,12 @@ int64_t SGFixedNode2D::get_global_fixed_rotation() const {
 
 void SGFixedNode2D::fixed_vector2_changed(SGFixedVector2 *p_vector) {
 	if (p_vector == fixed_transform->get_origin().ptr()) {
+		fixed_xform_dirty = true;
+		/*
 		START_UPDATING_TRANSFORM();
 		set_position(fixed_transform->get_origin()->to_float());
 		STOP_UPDATING_TRANSFORM();
+		*/
 	}
 	else if (p_vector == fixed_scale.ptr()) {
 		set_fixed_scale(fixed_scale);
@@ -293,6 +309,8 @@ SGFixedNode2D::SGFixedNode2D() {
 	fixed_scale = Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed::ONE, fixed::ONE))));
 	fixed_scale->set_watcher(this);
 
+	fixed_xform_dirty = false;
+
 #ifdef TOOLS_ENABLED
 	updating_transform = false;
 
@@ -300,6 +318,8 @@ SGFixedNode2D::SGFixedNode2D() {
 		add_change_receptor(this);
 	}
 #endif
+
+	set_physics_process_internal(true);
 }
 
 SGFixedNode2D::~SGFixedNode2D() {
