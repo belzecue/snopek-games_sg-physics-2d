@@ -97,6 +97,8 @@ public:
 	void set_global_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_global_fixed_rotation() const;
 
+	void update_float_transform();
+
 	void fixed_vector2_changed(SGFixedVector2 *p_vector);
 
 	SGFixedNode2D();
