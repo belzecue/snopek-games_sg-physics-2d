@@ -281,6 +281,9 @@ void SGFixedNode2D::fixed_vector2_changed(SGFixedVector2 *p_vector) {
 		set_position(fixed_transform->get_origin()->to_float());
 		STOP_UPDATING_TRANSFORM();
 	}
+	else if (p_vector == fixed_scale.ptr()) {
+		set_fixed_scale(fixed_scale);
+	}
 }
 
 SGFixedNode2D::SGFixedNode2D() {
@@ -288,6 +291,7 @@ SGFixedNode2D::SGFixedNode2D() {
 	fixed_transform->get_origin()->set_watcher(this);
 
 	fixed_scale = Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed::ONE, fixed::ONE))));
+	fixed_scale->set_watcher(this);
 
 #ifdef TOOLS_ENABLED
 	updating_transform = false;
