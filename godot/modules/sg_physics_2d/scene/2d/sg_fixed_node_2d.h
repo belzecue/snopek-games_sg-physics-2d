@@ -38,7 +38,7 @@ class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 	friend SGFixedVector2;
 
 	Ref<SGFixedTransform2D> fixed_transform;
-	Ref<SGFixedVector2> fixed_scale;
+	mutable Ref<SGFixedVector2> fixed_scale;
 	bool fixed_xform_dirty;
 
 #ifdef TOOLS_ENABLED
@@ -80,10 +80,10 @@ public:
 	Ref<SGFixedTransform2D> get_fixed_transform() const;
 
 	void set_fixed_position(const Ref<SGFixedVector2> &p_fixed_position);
-	Ref<SGFixedVector2> get_fixed_position();
+	Ref<SGFixedVector2> get_fixed_position() const;
 
 	void set_fixed_scale(const Ref<SGFixedVector2> &p_fixed_scale);
-	Ref<SGFixedVector2> get_fixed_scale();
+	Ref<SGFixedVector2> get_fixed_scale() const;
 
 	void set_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_fixed_rotation() const;

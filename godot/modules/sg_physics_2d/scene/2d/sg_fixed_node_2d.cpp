@@ -182,19 +182,21 @@ void SGFixedNode2D::_set_fixed_position_y(int64_t p_y) {
 }
 
 int64_t SGFixedNode2D::_get_fixed_scale_x() const {
-	return fixed_scale->get_x();
+	return get_fixed_scale()->get_x();
 }
 
 void SGFixedNode2D::_set_fixed_scale_x(int64_t p_x) {
 	fixed_scale->set_x(p_x);
+	set_fixed_scale(fixed_scale);
 }
 
 int64_t SGFixedNode2D::_get_fixed_scale_y() const {
-	return fixed_scale->get_y();
+	return get_fixed_scale()->get_y();
 }
 
 void SGFixedNode2D::_set_fixed_scale_y(int64_t p_y) {
 	fixed_scale->set_y(p_y);
+	set_fixed_scale(fixed_scale);
 }
 
 void SGFixedNode2D::set_fixed_transform(const Ref<SGFixedTransform2D> &p_fixed_transform) {
@@ -213,7 +215,7 @@ void SGFixedNode2D::set_fixed_position(const Ref<SGFixedVector2> &p_fixed_positi
 	_change_notify("fixed_position");
 }
 
-Ref<SGFixedVector2> SGFixedNode2D::get_fixed_position() {
+Ref<SGFixedVector2> SGFixedNode2D::get_fixed_position() const {
 	return fixed_transform->get_origin();
 }
 
@@ -228,7 +230,7 @@ void SGFixedNode2D::set_fixed_scale(const Ref<SGFixedVector2> &p_fixed_scale) {
 	_change_notify("fixed_scale");
 }
 
-Ref<SGFixedVector2> SGFixedNode2D::get_fixed_scale() {
+Ref<SGFixedVector2> SGFixedNode2D::get_fixed_scale() const {
 	fixed_scale->set_internal(fixed_transform->get_internal().get_scale());
 	return fixed_scale;
 }
