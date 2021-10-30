@@ -34,6 +34,10 @@ int64_t sg_sqrt_64(int64_t num);
 // 1 above the minimum.
 #define INT64_EFFECTIVE_MIN (INT64_MIN + 1)
 
+#ifdef DEBUG_ENABLED
+#define SG_FIXED_MATH_CHECKS
+#endif
+
 struct fixed {
 	int64_t value;
 
@@ -88,10 +92,13 @@ struct fixed {
 	}
 
 	_FORCE_INLINE_ fixed operator+(const fixed& p_other) const {
-		if (p_other.value > 0 && (value > INT64_MAX - p_other.value))
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value < 0 && (value < INT64_EFFECTIVE_MIN - p_other.value))
-			return fixed::ARITHMETIC_OVERFLOW;
+		#ifdef SG_FIXED_MATH_CHECKS
+		ERR_FAIL_COND_V_MSG(p_other.value > 0 && (value > INT64_MAX - p_other.value),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point addition overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value < 0 && (value < INT64_EFFECTIVE_MIN - p_other.value),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point addition overflow");
+		#endif
+
 		return fixed(value + p_other.value);
 	}
 
@@ -100,10 +107,13 @@ struct fixed {
 	}
 
 	_FORCE_INLINE_ fixed operator-(const fixed& p_other) const {
-		if (p_other.value < 0 && (value > INT64_MAX + p_other.value))
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value > 0 && (value < INT64_EFFECTIVE_MIN + p_other.value))
-			return fixed::ARITHMETIC_OVERFLOW;
+		#ifdef SG_FIXED_MATH_CHECKS
+		ERR_FAIL_COND_V_MSG(p_other.value < 0 && (value > INT64_MAX + p_other.value),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point subtraction overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value > 0 && (value < INT64_EFFECTIVE_MIN + p_other.value),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point subtraction overflow");
+		#endif
+
 		return fixed(value - p_other.value);
 	}
 
@@ -112,14 +122,17 @@ struct fixed {
 	}
 
 	_FORCE_INLINE_ fixed operator*(const fixed& p_other) const {
-		if (value == -1 && p_other.value == INT64_MAX)
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value == -1 && value == INT64_MIN)
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value > 0 && (value > (INT64_MAX / p_other.value) || value < (INT64_EFFECTIVE_MIN / p_other.value)))
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value < 0 && (value < (INT64_MAX / p_other.value) || value > (INT64_EFFECTIVE_MIN / p_other.value)))
-			return fixed::ARITHMETIC_OVERFLOW;
+		#ifdef SG_FIXED_MATH_CHECKS
+		ERR_FAIL_COND_V_MSG(value == -1 && p_other.value == INT64_MAX,
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point multiplication overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value == -1 && value == INT64_MIN,
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point multiplication overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value > 0 && (value > (INT64_MAX / p_other.value) || value < (INT64_EFFECTIVE_MIN / p_other.value)),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point multiplication overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value < 0 && (value < (INT64_MAX / p_other.value) || value > (INT64_EFFECTIVE_MIN / p_other.value)),
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point multiplication overflow");
+		#endif
+
 		return fixed((value * p_other.value) >> 16);
 	}
 
@@ -128,10 +141,13 @@ struct fixed {
 	}
 
 	_FORCE_INLINE_ fixed operator/(const fixed& p_other) const {
-		if (value == -1 && p_other.value == INT64_MAX)
-			return fixed::ARITHMETIC_OVERFLOW;
-		if (p_other.value == -1 && value == INT64_MIN)
-			return fixed::ARITHMETIC_OVERFLOW;
+		#ifdef SG_FIXED_MATH_CHECKS
+		ERR_FAIL_COND_V_MSG(value == -1 && p_other.value == INT64_MAX,
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point division overflow");
+		ERR_FAIL_COND_V_MSG(p_other.value == -1 && value == INT64_MIN,
+			fixed::ARITHMETIC_OVERFLOW, "Fixed-point division overflow");
+		#endif
+
 		return fixed((value << 16) / p_other.value);
 	}
 
