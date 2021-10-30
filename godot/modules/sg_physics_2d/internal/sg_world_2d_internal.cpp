@@ -179,7 +179,7 @@ bool SGWorld2DInternal::get_best_overlapping_body(SGCollisionObject2DInternal *p
 List<SGArea2DInternal *> *SGWorld2DInternal::get_overlapping_areas(SGCollisionObject2DInternal *p_object) const {
 	List<SGArea2DInternal *> *ret = memnew(List<SGArea2DInternal *>);
 
-	Set<SGCollisionObject2DInternal *> *nearby_bodies = broadphase->find_nearby(p_object->get_bounds(), SGCollisionObject2DInternal::OBJECT_BODY);
+	Set<SGCollisionObject2DInternal *> *nearby_bodies = broadphase->find_nearby(p_object->get_bounds(), SGCollisionObject2DInternal::OBJECT_AREA);
 	for (Set<SGCollisionObject2DInternal *>::Element *E = nearby_bodies->front(); E; E = E->next()) {
 		SGArea2DInternal *other = (SGArea2DInternal *)E->get();
 		if (other == p_object) {
