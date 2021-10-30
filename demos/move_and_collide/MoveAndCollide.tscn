@@ -26,10 +26,13 @@ collision_mask = 2
 
 [node name="Rectangle" type="SGCollisionShape2D" parent="StaticBody"]
 position = Vector2( -97.0001, -6 )
-rotation = -0.802277
-fixed_rotation = -52578
+rotation = -0.801961
+scale = Vector2( 0.999998, 0.999998 )
+fixed_rotation = -52536
 fixed_position_x = -6356996
 fixed_position_y = -393216
+fixed_scale_x = 65535
+fixed_scale_y = 65535
 shape = SubResource( 1 )
 
 [node name="ColorRect" type="ColorRect" parent="StaticBody/Rectangle"]
@@ -43,8 +46,9 @@ __meta__ = {
 
 [node name="Circle" type="SGCollisionShape2D" parent="StaticBody"]
 position = Vector2( -297, 86 )
-rotation = -0.781479
-fixed_rotation = -51215
+rotation = -0.781557
+scale = Vector2( 1.00001, 1.00001 )
+fixed_rotation = -51225
 fixed_position_x = -19464196
 fixed_position_y = 5636096
 shape = SubResource( 2 )
@@ -57,7 +61,7 @@ fixed_polygon_pairs = [ [ -3080192, -2686976 ], [ 6291456, -917504 ], [ 1376256,
 
 [node name="Character" type="SGKinematicBody2D" parent="."]
 position = Vector2( 512, 363 )
-rotation = -1.57079
+rotation = -1.5708
 fixed_rotation = -102943
 fixed_position_x = 33554432
 fixed_position_y = 23789570
