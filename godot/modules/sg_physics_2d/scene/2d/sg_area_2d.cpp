@@ -43,47 +43,55 @@ struct SGCollisionObjectComparator {
 	}
 };
 
-Array SGArea2D::get_overlapping_areas(bool sort) const {
-	Array ret;
+class SGArrayResultHandler : public SGResultHandlerInternal {
+private:
 
-	List<SGArea2DInternal *> *overlapping_areas = SGWorld2DInternal::get_singleton()->get_overlapping_areas((SGArea2DInternal *)internal);
+	List<SGCollisionObject2DInternal *> result;
 
-	if (sort && overlapping_areas->size() > 1) {
-		overlapping_areas->sort_custom<SGCollisionObjectComparator>();
+public:
+	void handle_result(SGCollisionObject2DInternal *p_object) {
+		result.push_back(p_object);
 	}
 
-	for (List<SGArea2DInternal *>::Element *E = overlapping_areas->front(); E; E = E->next()) {
-		SGArea2D *overlapping_area = Object::cast_to<SGArea2D>((Object *)E->get()->get_data());
-		if (overlapping_area) {
-			ret.push_back(overlapping_area);
+	void sort() {
+		if (result.size() > 1) {
+			result.sort_custom<SGCollisionObjectComparator>();
 		}
 	}
-	memdelete(overlapping_areas);
 
-	return ret;
+	Array build_array() {
+		Array ret;
+
+		for (List<SGCollisionObject2DInternal *>::Element *E = result.front(); E; E = E->next()) {
+			SGCollisionObject2D *object = Object::cast_to<SGCollisionObject2D>((Object *)E->get()->get_data());
+			if (object) {
+				ret.push_back(object);
+			}
+		}
+
+		return ret;
+	}
+
+};
+
+Array SGArea2D::get_overlapping_areas(bool sort) const {
+	SGArrayResultHandler result_handler;
+	SGWorld2DInternal::get_singleton()->get_overlapping_areas((SGArea2DInternal *)internal, &result_handler);
+
+	if (sort) {
+		result_handler.sort();
+	}
+	return result_handler.build_array();
 }
 
 Array SGArea2D::get_overlapping_bodies(bool sort) const {
-	Array ret;
+	SGArrayResultHandler result_handler;
+	SGWorld2DInternal::get_singleton()->get_overlapping_bodies((SGArea2DInternal *)internal, &result_handler);
 
-	List<SGBody2DInternal *> *overlapping_bodies = SGWorld2DInternal::get_singleton()->get_overlapping_bodies((SGArea2DInternal *)internal);
-
-	if (sort && overlapping_bodies->size() > 1) {
-		overlapping_bodies->sort_custom<SGCollisionObjectComparator>();
+	if (sort) {
+		result_handler.sort();
 	}
-
-	for (List<SGBody2DInternal *>::Element *E = overlapping_bodies->front(); E; E = E->next()) {
-		SGBody2DInternal *overlapping_body = E->get();
-		if (overlapping_body->get_body_type() == SGBody2DInternal::BODY_STATIC) {
-			ret.push_back((SGStaticBody2D *)overlapping_body->get_data());
-		}
-		else if (overlapping_body->get_body_type() == SGBody2DInternal::BODY_KINEMATIC) {
-			ret.push_back((SGKinematicBody2D *)overlapping_body->get_data());
-		}
-	}
-	memdelete(overlapping_bodies);
-
-	return ret;
+	return result_handler.build_array();
 }
 
 SGArea2D::SGArea2D()
