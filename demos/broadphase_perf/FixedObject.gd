@@ -16,7 +16,8 @@ func move_me() -> Array:
 	var timings := []
 	
 	timing = OS.get_ticks_usec()
-	var overlapping_areas = get_overlapping_areas()
+	#var overlapping_areas = get_overlapping_areas()
+	var overlapping_areas = get_overlapping_areas(false)
 	timings.append(OS.get_ticks_usec() - timing)
 	
 	if overlapping_areas.size() > 0:

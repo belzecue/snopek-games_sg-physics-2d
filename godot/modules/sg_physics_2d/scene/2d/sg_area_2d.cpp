@@ -46,6 +46,25 @@ struct SGCollisionObjectComparator {
 class SGArrayResultHandler : public SGResultHandlerInternal {
 private:
 
+	Array result;
+
+public:
+	void handle_result(SGCollisionObject2DInternal *p_object) {
+		SGCollisionObject2D *object = Object::cast_to<SGCollisionObject2D>((Object *)p_object->get_data());
+		if (object) {
+			result.push_back(object);
+		}
+	}
+
+	_FORCE_INLINE_ Array get_array() {
+		return result;
+	}
+
+};
+
+class SGSortedArrayResultHandler : public SGResultHandlerInternal {
+private:
+
 	List<SGCollisionObject2DInternal *> result;
 
 public:
@@ -53,15 +72,12 @@ public:
 		result.push_back(p_object);
 	}
 
-	void sort() {
+	_FORCE_INLINE_ Array get_array() {
 		if (result.size() > 1) {
 			result.sort_custom<SGCollisionObjectComparator>();
 		}
-	}
 
-	Array build_array() {
 		Array ret;
-
 		for (List<SGCollisionObject2DInternal *>::Element *E = result.front(); E; E = E->next()) {
 			SGCollisionObject2D *object = Object::cast_to<SGCollisionObject2D>((Object *)E->get()->get_data());
 			if (object) {
@@ -75,23 +91,27 @@ public:
 };
 
 Array SGArea2D::get_overlapping_areas(bool sort) const {
+	if (sort) {
+		SGSortedArrayResultHandler result_handler;
+		SGWorld2DInternal::get_singleton()->get_overlapping_areas((SGArea2DInternal *)internal, &result_handler);
+		return result_handler.get_array();
+	}
+
 	SGArrayResultHandler result_handler;
 	SGWorld2DInternal::get_singleton()->get_overlapping_areas((SGArea2DInternal *)internal, &result_handler);
-
-	if (sort) {
-		result_handler.sort();
-	}
-	return result_handler.build_array();
+	return result_handler.get_array();
 }
 
 Array SGArea2D::get_overlapping_bodies(bool sort) const {
+	if (sort) {
+		SGSortedArrayResultHandler result_handler;
+		SGWorld2DInternal::get_singleton()->get_overlapping_bodies((SGArea2DInternal *)internal, &result_handler);
+		return result_handler.get_array();
+	}
+
 	SGArrayResultHandler result_handler;
 	SGWorld2DInternal::get_singleton()->get_overlapping_bodies((SGArea2DInternal *)internal, &result_handler);
-
-	if (sort) {
-		result_handler.sort();
-	}
-	return result_handler.build_array();
+	return result_handler.get_array();
 }
 
 SGArea2D::SGArea2D()
