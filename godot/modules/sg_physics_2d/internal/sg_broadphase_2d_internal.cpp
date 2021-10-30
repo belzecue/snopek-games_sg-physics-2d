@@ -116,7 +116,7 @@ void SGBroadphase2DInternal::find_nearby(const SGFixedRect2Internal &p_bounds, S
 	int32_t to_x = max.x.to_int() / cell_size;
 	int32_t to_y = max.y.to_int() / cell_size;
 
-	current_query_id++;
+	uint64_t query_id = (++current_query_id);
 
 	for (int32_t x = from_x; x <= to_x; x++) {
 		for (int32_t y = from_y; y <= to_y; y++) {
@@ -131,11 +131,11 @@ void SGBroadphase2DInternal::find_nearby(const SGFixedRect2Internal &p_bounds, S
 			cell = cell_element->get();
 			for (List<SGBroadphase2DInternalElement *>::Element *E = cell->elements.front(); E; E = E->next()) {
 				SGBroadphase2DInternalElement *element = E->get();
-				if (element->query_id == current_query_id) {
+				if (element->query_id == query_id) {
 					continue;
 				}
 				if ((element->object->get_object_type() & p_type) && p_bounds.intersects(element->bounds)) {
-					element->query_id = current_query_id;
+					element->query_id = query_id;
 					p_result_handler->handle_result(element->object);
 				}
 			}
