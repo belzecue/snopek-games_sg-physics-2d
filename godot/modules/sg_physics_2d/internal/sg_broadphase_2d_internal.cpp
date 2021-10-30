@@ -26,19 +26,11 @@
 #include "sg_bodies_2d_internal.h"
 
 void SGBroadphase2DInternal::_add_element_to_cells(SGBroadphase2DInternalElement *p_element) {
-	SGFixedVector2Internal min = p_element->bounds.get_min();
-	SGFixedVector2Internal max = p_element->bounds.get_max();
-
-	int32_t from_x = min.x.to_int() / cell_size;
-	int32_t from_y = min.y.to_int() / cell_size;
-	int32_t to_x = max.x.to_int() / cell_size;
-	int32_t to_y = max.y.to_int() / cell_size;
-
-	p_element->indices.resize(((to_x + 1) - from_x) * ((to_y + 1) - from_y));
+	p_element->indices.resize(((p_element->to_x + 1) - p_element->from_x) * ((p_element->to_y + 1) - p_element->from_y));
 	int index = 0;
 
-	for (int32_t x = from_x; x <= to_x; x++) {
-		for (int32_t y = from_y; y <= to_y; y++) {
+	for (int32_t x = p_element->from_x; x <= p_element->to_x; x++) {
+		for (int32_t y = p_element->from_y; y <= p_element->to_y; y++) {
 			HashKey key(x, y);
 			Map<HashKey, Cell *>::Element *cell_element = cells.find(key);
 			Cell *cell;
@@ -90,14 +82,42 @@ SGBroadphase2DInternalElement *SGBroadphase2DInternal::create_element(SGCollisio
 
 	element->object = p_object;
 	element->bounds = p_object->get_bounds();
+
+	SGFixedVector2Internal min = element->bounds.get_min();
+	SGFixedVector2Internal max = element->bounds.get_max();
+
+	element->from_x = min.x.to_int() / cell_size;
+	element->from_y = min.y.to_int() / cell_size;
+	element->to_x = max.x.to_int() / cell_size;
+	element->to_y = max.y.to_int() / cell_size;
+
 	_add_element_to_cells(element);
 
 	return element;
 }
 
 void SGBroadphase2DInternal::update_element(SGBroadphase2DInternalElement *p_element) {
-	_remove_element_from_cells(p_element);
 	p_element->bounds = p_element->object->get_bounds();
+
+	SGFixedVector2Internal min = p_element->bounds.get_min();
+	SGFixedVector2Internal max = p_element->bounds.get_max();
+
+	int32_t from_x = min.x.to_int() / cell_size;
+	int32_t from_y = min.y.to_int() / cell_size;
+	int32_t to_x = max.x.to_int() / cell_size;
+	int32_t to_y = max.y.to_int() / cell_size;
+
+	if (p_element->from_x == from_x && p_element->to_x == to_x && p_element->from_y == from_y && p_element->to_y == to_y) {
+		return;
+	}
+
+	_remove_element_from_cells(p_element);
+
+	p_element->from_x = from_x;
+	p_element->to_x = to_x;
+	p_element->from_y = from_y;
+	p_element->to_y = to_y;
+
 	_add_element_to_cells(p_element);
 }
 

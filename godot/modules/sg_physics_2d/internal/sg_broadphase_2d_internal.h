@@ -31,12 +31,19 @@ struct SGBroadphase2DInternalElement {
 	SGCollisionObject2DInternal *object;
 	SGFixedRect2Internal bounds;
 	Vector<uint64_t> indices;
+
+	int32_t from_x;
+	int32_t to_x;
+	int32_t from_y;
+	int32_t to_y;
+
 	uint64_t query_id;
 
 	_FORCE_INLINE_ SGBroadphase2DInternalElement() {
 		object = nullptr;
 		query_id = 0;
 	}
+
 };
 
 class SGBroadphase2DInternal {
