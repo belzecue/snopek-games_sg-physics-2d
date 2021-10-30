@@ -68,6 +68,10 @@ Ref<SGFixedVector2> SGRectangleShape2D::get_extents() {
 	return extents;
 }
 
+void SGRectangleShape2D::fixed_vector2_changed(SGFixedVector2 *p_vector) {
+	emit_changed();
+}
+
 SGShape2DInternal *SGRectangleShape2D::create_internal_shape() const {
 	return memnew(SGRectangle2DInternal(fixed(655360), fixed(655360)));
 }
@@ -102,7 +106,7 @@ void SGRectangleShape2D::draw(const RID &p_to_rid, const Color &p_color) {
 SGRectangleShape2D::SGRectangleShape2D() : SGShape2D(),
 	extents(Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed(655360), fixed(655360))))))
 {
-	//extents->connect("changed", this, "emit_changed");
+	extents->set_watcher(this);
 }
 
 SGRectangleShape2D::~SGRectangleShape2D() {

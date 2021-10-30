@@ -39,8 +39,6 @@ class SGFixedTransform2D : public Reference {
 protected:
 	static void _bind_methods();
 
-	void _vector_changed();
-
 public:
 	_FORCE_INLINE_ Ref<SGFixedVector2> get_x() const { return x; }
 	void set_x(const Ref<SGFixedVector2> &p_x);
