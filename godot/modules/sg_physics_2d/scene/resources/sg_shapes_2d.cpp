@@ -110,6 +110,7 @@ SGRectangleShape2D::SGRectangleShape2D() : SGShape2D(),
 }
 
 SGRectangleShape2D::~SGRectangleShape2D() {
+	extents->set_watcher(nullptr);
 }
 
 

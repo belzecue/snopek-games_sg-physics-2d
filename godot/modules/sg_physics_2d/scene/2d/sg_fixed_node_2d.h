@@ -35,7 +35,6 @@ class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 	GDCLASS(SGFixedNode2D, Node2D);
 
 	friend SGCollisionObject2D;
-	friend SGFixedVector2;
 
 	Ref<SGFixedTransform2D> fixed_transform;
 	mutable Ref<SGFixedVector2> fixed_scale;
@@ -60,10 +59,6 @@ protected:
 	void update_global_fixed_transform_internal(const SGFixedTransform2DInternal &p_global_transform);
 
 	void _set_fixed_position(const SGFixedVector2Internal &p_fixed_position);
-
-	void _fixed_transform_changed();
-	void _fixed_position_changed();
-	void _fixed_scale_changed();
 
 	int64_t _get_fixed_position_x() const;
 	void _set_fixed_position_x(int64_t p_x);

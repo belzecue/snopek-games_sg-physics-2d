@@ -36,14 +36,12 @@
 void SGFixedNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fixed_transform"), &SGFixedNode2D::get_fixed_transform);
 	ClassDB::bind_method(D_METHOD("set_fixed_transform", "fixed_transform"), &SGFixedNode2D::set_fixed_transform);
-	ClassDB::bind_method(D_METHOD("_fixed_transform_changed"), &SGFixedNode2D::_fixed_transform_changed);
 
 	ClassDB::bind_method(D_METHOD("get_fixed_position"), &SGFixedNode2D::get_fixed_position);
 	ClassDB::bind_method(D_METHOD("set_fixed_position", "fixed_position"), &SGFixedNode2D::set_fixed_position);
 
 	ClassDB::bind_method(D_METHOD("get_fixed_scale"), &SGFixedNode2D::get_fixed_scale);
 	ClassDB::bind_method(D_METHOD("set_fixed_scale", "fixed_scale"), &SGFixedNode2D::set_fixed_scale);
-	ClassDB::bind_method(D_METHOD("_fixed_scale_changed"), &SGFixedNode2D::_fixed_scale_changed);
 
 	ClassDB::bind_method(D_METHOD("get_fixed_rotation"), &SGFixedNode2D::get_fixed_rotation);
 	ClassDB::bind_method(D_METHOD("set_fixed_rotation", "fixed_scale"), &SGFixedNode2D::set_fixed_rotation);
@@ -131,15 +129,11 @@ SGFixedTransform2DInternal SGFixedNode2D::get_global_fixed_transform_internal() 
 }
 
 void SGFixedNode2D::update_fixed_transform_internal(const SGFixedTransform2DInternal &p_transform) {
-	START_UPDATING_TRANSFORM();
-
 	fixed_transform->set_internal(p_transform);
 	fixed_xform_dirty = true;
 	_change_notify("fixed_position");
 	_change_notify("fixed_scale");
 	_change_notify("fixed_rotation");
-
-	STOP_UPDATING_TRANSFORM();
 }
 
 void SGFixedNode2D::update_global_fixed_transform_internal(const SGFixedTransform2DInternal &p_global_transform) {
@@ -152,17 +146,9 @@ void SGFixedNode2D::update_global_fixed_transform_internal(const SGFixedTransfor
 	}
 }
 
-void SGFixedNode2D::_fixed_transform_changed() {
-	update_fixed_transform_internal(fixed_transform->get_internal());
-}
-
 void SGFixedNode2D::_set_fixed_position(const SGFixedVector2Internal &p_fixed_position) {
 	fixed_transform->get_origin()->set_internal(p_fixed_position);
 	fixed_xform_dirty = true;
-}
-
-void SGFixedNode2D::_fixed_scale_changed() {
-	set_fixed_scale(fixed_scale);
 }
 
 int64_t SGFixedNode2D::_get_fixed_position_x() const {
@@ -320,5 +306,6 @@ SGFixedNode2D::SGFixedNode2D() {
 }
 
 SGFixedNode2D::~SGFixedNode2D() {
-	fixed_transform->get_origin()->set_watcher(this);
+	fixed_transform->get_origin()->set_watcher(nullptr);
+	fixed_scale->set_watcher(nullptr);
 }
