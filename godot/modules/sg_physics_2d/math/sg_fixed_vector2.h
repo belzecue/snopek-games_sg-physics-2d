@@ -29,7 +29,14 @@
 
 #include "../internal/sg_fixed_vector2_internal.h"
 
-class SGFixedVector2Watcher;
+class SGFixedVector2;
+
+class SGFixedVector2Watcher {
+public:
+
+	virtual void fixed_vector2_changed(SGFixedVector2 *p_vector) = 0;
+
+};
 
 class SGFixedVector2 : public Reference {
 
@@ -133,13 +140,5 @@ public:
 	~SGFixedVector2() { };
 
 };
-
-class SGFixedVector2Watcher {
-public:
-
-	virtual void fixed_vector2_changed(SGFixedVector2 *p_vector) = 0;
-
-};
-
 
 #endif
