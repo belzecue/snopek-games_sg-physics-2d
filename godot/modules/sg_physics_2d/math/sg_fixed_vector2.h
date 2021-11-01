@@ -48,18 +48,24 @@ public:
 
 	void set_x(int64_t p_x) {
 		value.x.value = p_x;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
 	}
 
 	void set_y(int64_t p_y) {
 		value.y.value = p_y;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
 	}
 
 	void clear() {
 		value.x.value = 0;
 		value.y.value = 0;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
 	}
 
 	_FORCE_INLINE_ void set_watcher(SGFixedVector2Watcher *p_watcher) const {
