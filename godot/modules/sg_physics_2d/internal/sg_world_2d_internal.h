@@ -28,6 +28,7 @@
 
 #include "sg_fixed_vector2_internal.h"
 #include "sg_fixed_rect2_internal.h"
+#include "sg_result_handler_internal.h"
 
 class SGArea2DInternal;
 class SGBody2DInternal;
@@ -93,8 +94,8 @@ public:
 
 	bool get_best_overlapping_body(SGCollisionObject2DInternal *p_object, BodyOverlapInfo *p_info, CompareCallback p_compare = nullptr) const;
 
-	List<SGArea2DInternal *> *get_overlapping_areas(SGCollisionObject2DInternal *p_object) const;
-	List<SGBody2DInternal *> *get_overlapping_bodies(SGCollisionObject2DInternal *p_object) const;
+	void get_overlapping_areas(SGCollisionObject2DInternal *p_object, SGResultHandlerInternal *p_result_handler) const;
+	void get_overlapping_bodies(SGCollisionObject2DInternal *p_object, SGResultHandlerInternal *p_result_handler) const;
 
 	bool segment_intersects_shape(const SGFixedVector2Internal &p_start, const SGFixedVector2Internal &p_cast_to, SGShape2DInternal *p_shape, SGFixedVector2Internal &p_intersection_point, SGFixedVector2Internal &p_collision_normal) const;
 	bool cast_ray(const SGFixedVector2Internal &p_start, const SGFixedVector2Internal &p_cast_to, uint32_t p_collision_mask, Set<SGCollisionObject2DInternal *> *p_exceptions = nullptr, RayCastInfo *p_info = nullptr) const;

@@ -39,16 +39,14 @@ class SGFixedTransform2D : public Reference {
 protected:
 	static void _bind_methods();
 
-	void _vector_changed();
-
 public:
-	Ref<SGFixedVector2> get_x() const;
+	_FORCE_INLINE_ Ref<SGFixedVector2> get_x() const { return x; }
 	void set_x(const Ref<SGFixedVector2> &p_x);
 
-	Ref<SGFixedVector2> get_y() const;
+	_FORCE_INLINE_ Ref<SGFixedVector2> get_y() const { return y; }
 	void set_y(const Ref<SGFixedVector2> &p_y);
 
-	Ref<SGFixedVector2> get_origin() const;
+	_FORCE_INLINE_ Ref<SGFixedVector2> get_origin() const { return origin; }
 	void set_origin(const Ref<SGFixedVector2> &p_origin);
 
 	_FORCE_INLINE_ SGFixedTransform2DInternal get_internal() const {

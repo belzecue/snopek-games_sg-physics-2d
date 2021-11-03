@@ -47,14 +47,16 @@ protected:
 	SGFixedTransform2DInternal transform;
 	mutable SGFixedTransform2DInternal global_transform;
 	mutable bool global_xform_dirty;
+	mutable bool global_vertices_dirty;
+	mutable bool global_axes_dirty;
 	SGCollisionObject2DInternal *owner;
 	mutable Vector<SGFixedVector2Internal> global_vertices;
 	mutable Vector<SGFixedVector2Internal> global_axes;
 
 	_FORCE_INLINE_ void mark_global_xform_dirty() const {
 		global_xform_dirty = true;
-		global_vertices.clear();
-		global_axes.clear();
+		global_vertices_dirty = true;
+		global_axes_dirty = true;
 	}
 
 	_FORCE_INLINE_ void set_owner(SGCollisionObject2DInternal *p_owner) {
@@ -81,6 +83,8 @@ public:
 	SGShape2DInternal(ShapeType p_shape_type) {
 		shape_type = p_shape_type;
 		global_xform_dirty = false;
+		global_vertices_dirty = true;
+		global_axes_dirty = true;
 		owner = nullptr;
 	}
 	virtual ~SGShape2DInternal() {}
@@ -95,7 +99,7 @@ public:
 	_FORCE_INLINE_ SGFixedVector2Internal get_extents() const { return extents; }
 	_FORCE_INLINE_ void set_extents(const SGFixedVector2Internal &p_extents) {
 		extents = p_extents;
-		global_vertices.clear();
+		global_vertices_dirty = true;
 	}
 
 	virtual Vector<SGFixedVector2Internal> get_global_vertices() const override;
@@ -105,6 +109,8 @@ public:
 		: SGShape2DInternal(SHAPE_RECTANGLE) 
 	{
 		extents = p_extents;
+		global_vertices.resize(4);
+		global_axes.resize(2);
 	}
 	SGRectangle2DInternal(fixed p_extents_w, fixed p_extents_h) 
 		: SGRectangle2DInternal(SGFixedVector2Internal(p_extents_w, p_extents_h)) { }

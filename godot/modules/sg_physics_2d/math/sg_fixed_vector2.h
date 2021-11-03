@@ -29,10 +29,20 @@
 
 #include "../internal/sg_fixed_vector2_internal.h"
 
+class SGFixedVector2;
+
+class SGFixedVector2Watcher {
+public:
+
+	virtual void fixed_vector2_changed(SGFixedVector2 *p_vector) = 0;
+
+};
+
 class SGFixedVector2 : public Reference {
 
 	GDCLASS(SGFixedVector2, Reference);
 
+	mutable SGFixedVector2Watcher *watcher;
 	SGFixedVector2Internal value;
 
 protected:
@@ -45,18 +55,28 @@ public:
 
 	void set_x(int64_t p_x) {
 		value.x.value = p_x;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
 	}
 
 	void set_y(int64_t p_y) {
 		value.y.value = p_y;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
 	}
 
 	void clear() {
 		value.x.value = 0;
 		value.y.value = 0;
-		emit_signal("changed");
+		if (watcher) {
+			watcher->fixed_vector2_changed(this);
+		}
+	}
+
+	_FORCE_INLINE_ void set_watcher(SGFixedVector2Watcher *p_watcher) const {
+		watcher = p_watcher;
 	}
 
 	Variant add(const Variant &p_other) const;
@@ -109,9 +129,12 @@ public:
 		return Ref<SGFixedVector2>(memnew(SGFixedVector2(p_internal)));
 	}
 
-	SGFixedVector2() { }
+	SGFixedVector2() {
+		watcher = nullptr;
+	}
 	SGFixedVector2(const SGFixedVector2Internal& p_internal_vector) {
 		value = p_internal_vector;
+		watcher = nullptr;
 	}
 
 	~SGFixedVector2() { };

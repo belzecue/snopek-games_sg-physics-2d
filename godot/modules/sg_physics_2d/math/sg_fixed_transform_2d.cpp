@@ -52,9 +52,6 @@ void SGFixedTransform2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("xform_inv", "vector"), &SGFixedTransform2D::xform_inv);
 
 	ClassDB::bind_method(D_METHOD("copy"), &SGFixedTransform2D::copy);
-	ClassDB::bind_method(D_METHOD("_vector_changed"), &SGFixedTransform2D::_vector_changed);
-
-	ADD_SIGNAL(MethodInfo("changed"));
 }
 
 Transform2D SGFixedTransform2D::to_float() const {
@@ -78,35 +75,19 @@ Ref<SGFixedTransform2D> SGFixedTransform2D::copy() const {
 	return ret;
 }
 
-void SGFixedTransform2D::_vector_changed() {
-	emit_signal("changed");
-}
-
-Ref<SGFixedVector2> SGFixedTransform2D::get_x() const {
-	return x;
-}
-
 void SGFixedTransform2D::set_x(const Ref<SGFixedVector2> &p_x) {
 	ERR_FAIL_COND(!p_x.is_valid());
-	x = p_x;
-}
-
-Ref<SGFixedVector2> SGFixedTransform2D::get_y() const {
-	return y;
+	x->set_internal(p_x->get_internal());
 }
 
 void SGFixedTransform2D::set_y(const Ref<SGFixedVector2> &p_y) {
 	ERR_FAIL_COND(!p_y.is_valid());
-	y = p_y;
-}
-
-Ref<SGFixedVector2> SGFixedTransform2D::get_origin() const {
-	return origin;
+	y->set_internal(p_y->get_internal());
 }
 
 void SGFixedTransform2D::set_origin(const Ref<SGFixedVector2> &p_origin) {
 	ERR_FAIL_COND(!p_origin.is_valid());
-	origin = p_origin;
+	origin->set_internal(p_origin->get_internal());
 }
 
 Ref<SGFixedTransform2D> SGFixedTransform2D::inverse() const {
@@ -215,7 +196,4 @@ SGFixedTransform2D::SGFixedTransform2D(const SGFixedTransform2DInternal &p_inter
 	y(memnew(SGFixedVector2(p_internal.elements[1]))),
 	origin(memnew(SGFixedVector2(p_internal.elements[2])))
 {
-	x->connect("changed", this, "_vector_changed");
-	y->connect("changed", this, "_vector_changed");
-	origin->connect("changed", this, "_vector_changed");
 }

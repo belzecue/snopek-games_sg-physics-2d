@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://demos/MoveAndCollide.gd" type="Script" id=1]
-[ext_resource path="res://demos/tank_blue.png" type="Texture" id=3]
+[ext_resource path="res://demos/move_and_collide/MoveAndCollide.gd" type="Script" id=1]
+[ext_resource path="res://demos/move_and_collide/tank_blue.png" type="Texture" id=2]
 
 [sub_resource type="SGRectangleShape2D" id=1]
 extents_x = 3276800
@@ -26,8 +26,9 @@ collision_mask = 2
 
 [node name="Rectangle" type="SGCollisionShape2D" parent="StaticBody"]
 position = Vector2( -97.0001, -6 )
-rotation = -0.802277
-fixed_rotation = -52578
+rotation = -0.801637
+scale = Vector2( 1.00001, 1.00001 )
+fixed_rotation = -52515
 fixed_position_x = -6356996
 fixed_position_y = -393216
 shape = SubResource( 1 )
@@ -43,8 +44,9 @@ __meta__ = {
 
 [node name="Circle" type="SGCollisionShape2D" parent="StaticBody"]
 position = Vector2( -297, 86 )
-rotation = -0.781479
-fixed_rotation = -51215
+rotation = -0.781622
+scale = Vector2( 1.00001, 1.00001 )
+fixed_rotation = -51229
 fixed_position_x = -19464196
 fixed_position_y = 5636096
 shape = SubResource( 2 )
@@ -57,7 +59,7 @@ fixed_polygon_pairs = [ [ -3080192, -2686976 ], [ 6291456, -917504 ], [ 1376256,
 
 [node name="Character" type="SGKinematicBody2D" parent="."]
 position = Vector2( 512, 363 )
-rotation = -1.57079
+rotation = -1.5708
 fixed_rotation = -102943
 fixed_position_x = 33554432
 fixed_position_y = 23789570
@@ -66,7 +68,7 @@ collision_mask = 0
 
 [node name="Sprite" type="Sprite" parent="Character"]
 rotation = -1.5708
-texture = ExtResource( 3 )
+texture = ExtResource( 2 )
 
 [node name="SGCollisionPolygon2D" type="SGCollisionPolygon2D" parent="Character"]
 fixed_polygon_pairs = [ [ 786416, -1376264 ], [ 1245176, -655372 ], [ 1245190, 720884 ], [ 786446, 1376248 ], [ -1179634, 1376268 ], [ -1507318, 983056 ], [ -1507340, -983024 ], [ -1179664, -1376244 ] ]

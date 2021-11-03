@@ -50,7 +50,7 @@ public:
 	virtual ~SGShape2D();
 };
 
-class SGRectangleShape2D : public SGShape2D {
+class SGRectangleShape2D : public SGShape2D, public SGFixedVector2Watcher {
 	GDCLASS(SGRectangleShape2D, SGShape2D);
 	OBJ_SAVE_TYPE(SGRectangleShape2D);
 
@@ -69,6 +69,8 @@ protected:
 public:
 	void set_extents(const Ref<SGFixedVector2>& p_extents);
 	Ref<SGFixedVector2> get_extents();
+
+	void fixed_vector2_changed(SGFixedVector2 *p_vector);
 
 	virtual void sync_to_physics_engine(SGShape2DInternal *p_internal_shape) const override;
 

@@ -21,83 +21,16 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef SG_BROADPHASE_2D_INTERNAL_H
-#define SG_BROADPHASE_2D_INTERNAL_H
-
-#include <core/list.h>
-#include <core/map.h>
-
-#include "sg_fixed_rect2_internal.h"
-#include "sg_result_handler_internal.h"
+#ifndef SG_RESULT_HANDLER_INTERNAL_H
+#define SG_RESULT_HANDLER_INTERNAL_H
 
 class SGCollisionObject2DInternal;
 
-class SGBroadphase2DInternal {
+class SGResultHandlerInternal {
 public:
 
-	struct HashKey {
-		union {
-			struct {
-				int32_t x;
-				int32_t y;
-			};
-			uint64_t key;
-		};
+	virtual void handle_result(SGCollisionObject2DInternal *p_object) = 0;
 
-		_FORCE_INLINE_ HashKey() { }
-
-		_FORCE_INLINE_ HashKey(int32_t p_x, int32_t p_y) {
-			x = p_x;
-			y = p_y;
-		}
-
-		_FORCE_INLINE_ HashKey(uint64_t p_key) {
-			key = p_key;
-		}
-
-		_FORCE_INLINE_ bool operator==(HashKey p_other) const { return key == p_other.key; }
-		_FORCE_INLINE_ bool operator<(HashKey p_other) const { return key < p_other.key; }
-	};
-
-	struct Element {
-		SGCollisionObject2DInternal *object;
-		SGFixedRect2Internal bounds;
-		HashKey from;
-		HashKey to;
-		uint64_t query_id;
-
-		_FORCE_INLINE_ Element() {
-			object = nullptr;
-			query_id = 0;
-		}
-	};
-
-	struct Cell {
-		List<Element *> elements;
-	};
-
-private:
-	List<Element *> elements;
-	Map<HashKey, Cell *> cells;
-	int cell_size;
-	mutable uint64_t current_query_id;
-
-	void _add_element_to_cells(Element *p_element);
-	void _remove_element_from_cells(Element *p_element);
-	void _clear_cells();
-
-public:
-	Element *create_element(SGCollisionObject2DInternal *p_object);
-	void update_element(Element *p_element);
-	void delete_element(Element *p_element);
-
-	// p_type is really SGCollisionObject2DInternal::ObjectType, but I couldn't work out the circulate dependencies.
-	void find_nearby(const SGFixedRect2Internal &p_bounds, SGResultHandlerInternal *p_result_handler, int p_type = 3) const;
-
-	void set_cell_size(int p_cell_size);
-
-	SGBroadphase2DInternal(int p_cell_size);
-	~SGBroadphase2DInternal();
 };
 
 #endif

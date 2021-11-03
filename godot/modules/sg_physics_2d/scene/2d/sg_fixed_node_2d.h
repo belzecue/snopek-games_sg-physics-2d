@@ -31,22 +31,26 @@
 
 class SGCollisionObject2D;
 
-class SGFixedNode2D : public Node2D {
+class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 	GDCLASS(SGFixedNode2D, Node2D);
 
 	friend SGCollisionObject2D;
 
 	Ref<SGFixedTransform2D> fixed_transform;
-	Ref<SGFixedVector2> fixed_position;
-	Ref<SGFixedVector2> fixed_scale;
-	int64_t fixed_rotation;
+	mutable Ref<SGFixedVector2> fixed_scale;
+	bool fixed_xform_dirty;
 
+#ifdef TOOLS_ENABLED
 	bool updating_transform;
+#endif
 
 protected:
 	static void _bind_methods();
+	void _notification(int p_what);
 
+#ifdef TOOLS_ENABLED
 	virtual void _changed_callback(Object *p_changed, const char *p_prop) override;
+#endif
 
 	_FORCE_INLINE_ SGFixedTransform2DInternal get_fixed_transform_internal() const { return fixed_transform->get_internal(); }
 	SGFixedTransform2DInternal get_global_fixed_transform_internal() const;
@@ -55,10 +59,6 @@ protected:
 	void update_global_fixed_transform_internal(const SGFixedTransform2DInternal &p_global_transform);
 
 	void _set_fixed_position(const SGFixedVector2Internal &p_fixed_position);
-
-	void _fixed_transform_changed();
-	void _fixed_position_changed();
-	void _fixed_scale_changed();
 
 	int64_t _get_fixed_position_x() const;
 	void _set_fixed_position_x(int64_t p_x);
@@ -75,10 +75,10 @@ public:
 	Ref<SGFixedTransform2D> get_fixed_transform() const;
 
 	void set_fixed_position(const Ref<SGFixedVector2> &p_fixed_position);
-	Ref<SGFixedVector2> get_fixed_position();
+	Ref<SGFixedVector2> get_fixed_position() const;
 
 	void set_fixed_scale(const Ref<SGFixedVector2> &p_fixed_scale);
-	Ref<SGFixedVector2> get_fixed_scale();
+	Ref<SGFixedVector2> get_fixed_scale() const;
 
 	void set_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_fixed_rotation() const;
@@ -92,6 +92,9 @@ public:
 	void set_global_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_global_fixed_rotation() const;
 
+	void update_float_transform();
+
+	void fixed_vector2_changed(SGFixedVector2 *p_vector);
 
 	SGFixedNode2D();
 	~SGFixedNode2D();
