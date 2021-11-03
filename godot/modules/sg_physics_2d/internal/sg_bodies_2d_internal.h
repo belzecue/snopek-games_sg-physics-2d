@@ -27,9 +27,7 @@
 #include <core/vector.h>
 
 #include "sg_shapes_2d_internal.h"
-
-class SGBroadphase2DInternal;
-class SGBroadphase2DInternalElement;
+#include "sg_broadphase_2d_internal.h"
 
 class SGCollisionObject2DInternal {
 public:
@@ -44,7 +42,7 @@ private:
 	SGFixedTransform2DInternal transform;
 	List<SGShape2DInternal *> shapes;
 	SGBroadphase2DInternal *broadphase;
-	SGBroadphase2DInternalElement *broadphase_element;
+	SGBroadphase2DInternal::Element *broadphase_element;
 	void *data;
 
 	uint32_t collision_layer;

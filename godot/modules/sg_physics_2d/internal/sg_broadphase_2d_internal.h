@@ -24,29 +24,16 @@
 #ifndef SG_BROADPHASE_2D_INTERNAL_H
 #define SG_BROADPHASE_2D_INTERNAL_H
 
-#include "sg_bodies_2d_internal.h"
+#include <core/list.h>
+#include <core/map.h>
+
+#include "sg_fixed_rect2_internal.h"
 #include "sg_result_handler_internal.h"
 
-struct SGBroadphase2DInternalElement {
-	SGCollisionObject2DInternal *object;
-	SGFixedRect2Internal bounds;
-	Vector<uint64_t> indices;
-
-	int32_t from_x;
-	int32_t to_x;
-	int32_t from_y;
-	int32_t to_y;
-
-	uint64_t query_id;
-
-	_FORCE_INLINE_ SGBroadphase2DInternalElement() {
-		object = nullptr;
-		query_id = 0;
-	}
-
-};
+class SGCollisionObject2DInternal;
 
 class SGBroadphase2DInternal {
+public:
 
 	struct HashKey {
 		union {
@@ -68,28 +55,44 @@ class SGBroadphase2DInternal {
 			key = p_key;
 		}
 
+		_FORCE_INLINE_ bool operator==(HashKey p_other) const { return key == p_other.key; }
 		_FORCE_INLINE_ bool operator<(HashKey p_other) const { return key < p_other.key; }
 	};
 
-	struct Cell {
-		List<SGBroadphase2DInternalElement *> elements;
+	struct Element {
+		SGCollisionObject2DInternal *object;
+		SGFixedRect2Internal bounds;
+		HashKey from;
+		HashKey to;
+		uint64_t query_id;
+
+		_FORCE_INLINE_ Element() {
+			object = nullptr;
+			query_id = 0;
+		}
 	};
 
-	List<SGBroadphase2DInternalElement *> elements;
+	struct Cell {
+		List<Element *> elements;
+	};
+
+private:
+	List<Element *> elements;
 	Map<HashKey, Cell *> cells;
 	int cell_size;
 	mutable uint64_t current_query_id;
 
-	void _add_element_to_cells(SGBroadphase2DInternalElement *p_element);
-	void _remove_element_from_cells(SGBroadphase2DInternalElement *p_element);
+	void _add_element_to_cells(Element *p_element);
+	void _remove_element_from_cells(Element *p_element);
 	void _clear_cells();
 
 public:
-	SGBroadphase2DInternalElement *create_element(SGCollisionObject2DInternal *p_object);
-	void update_element(SGBroadphase2DInternalElement *p_element);
-	void delete_element(SGBroadphase2DInternalElement *p_element);
+	Element *create_element(SGCollisionObject2DInternal *p_object);
+	void update_element(Element *p_element);
+	void delete_element(Element *p_element);
 
-	void find_nearby(const SGFixedRect2Internal &p_bounds, SGResultHandlerInternal *p_result_handler, SGCollisionObject2DInternal::ObjectType p_type = SGCollisionObject2DInternal::OBJECT_BOTH) const;
+	// p_type is really SGCollisionObject2DInternal::ObjectType, but I couldn't work out the circulate dependencies.
+	void find_nearby(const SGFixedRect2Internal &p_bounds, SGResultHandlerInternal *p_result_handler, int p_type = 3) const;
 
 	void set_cell_size(int p_cell_size);
 

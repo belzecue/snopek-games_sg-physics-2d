@@ -24,7 +24,7 @@
 #ifndef SG_RESULT_HANDLER_INTERNAL_H
 #define SG_RESULT_HANDLER_INTERNAL_H
 
-#include "sg_bodies_2d_internal.h"
+class SGCollisionObject2DInternal;
 
 class SGResultHandlerInternal {
 public:
