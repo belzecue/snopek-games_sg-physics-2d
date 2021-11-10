@@ -57,7 +57,7 @@ bool SGKinematicBody2D::move_and_collide(const SGFixedVector2Internal &p_linear_
 		}
 	}
 	if (stuck) {
-		sync_from_physics_engine();
+		_set_fixed_position(internal->get_transform().get_origin());
 
 		// We can't really continue. Bail with some sort of reasonable values.
 		p_collision.collider = Object::cast_to<SGCollisionObject2D>((Object *)overlap_info.collider->get_data());
@@ -139,7 +139,6 @@ bool SGKinematicBody2D::rotate_and_slide(int64_t p_rotation, int p_max_slides) {
 	SGWorld2DInternal *world = SGWorld2DInternal::get_singleton();
 	SGWorld2DInternal::BodyOverlapInfo overlap_info;
 
-	// @todo Can't we do this by manipulating the underlying transform?
 	set_fixed_rotation(get_fixed_rotation() + p_rotation);
 	sync_to_physics_engine();
 
@@ -157,7 +156,7 @@ bool SGKinematicBody2D::rotate_and_slide(int64_t p_rotation, int p_max_slides) {
 		}
 	}
 
-	sync_from_physics_engine();
+	_set_fixed_position(internal->get_transform().get_origin());
 
 	return stuck;
 }

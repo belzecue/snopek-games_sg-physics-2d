@@ -120,6 +120,14 @@ void SGFixedNode2D::_changed_callback(Object *p_changed, const char *p_prop) {
 }
 #endif
 
+void SGFixedNode2D::_update_fixed_transform_rotation_and_scale() {
+	SGFixedTransform2DInternal new_xform;
+	new_xform.set_rotation_and_scale(fixed(fixed_rotation), fixed_scale->get_internal());
+	fixed_transform->get_x()->set_internal(new_xform[0]);
+	fixed_transform->get_y()->set_internal(new_xform[1]);
+	fixed_xform_dirty = true;
+}
+
 SGFixedTransform2DInternal SGFixedNode2D::get_global_fixed_transform_internal() const {
 	SGFixedNode2D *fixed_parent = Object::cast_to<SGFixedNode2D>(get_parent());
 	if (fixed_parent) {
@@ -130,6 +138,8 @@ SGFixedTransform2DInternal SGFixedNode2D::get_global_fixed_transform_internal() 
 
 void SGFixedNode2D::update_fixed_transform_internal(const SGFixedTransform2DInternal &p_transform) {
 	fixed_transform->set_internal(p_transform);
+	fixed_scale->set_internal(p_transform.get_scale());
+	fixed_rotation = p_transform.get_rotation().value;
 	fixed_xform_dirty = true;
 	_change_notify("fixed_position");
 	_change_notify("fixed_scale");
@@ -168,21 +178,21 @@ void SGFixedNode2D::_set_fixed_position_y(int64_t p_y) {
 }
 
 int64_t SGFixedNode2D::_get_fixed_scale_x() const {
-	return get_fixed_scale()->get_x();
+	return fixed_scale->get_x();
 }
 
-void SGFixedNode2D::_set_fixed_scale_x(int64_t p_x) {
-	fixed_scale->set_x(p_x);
-	set_fixed_scale(fixed_scale);
+void SGFixedNode2D::_set_fixed_scale_x(int64_t p_scale_x) {
+	fixed_scale->set_x(p_scale_x);
+	_update_fixed_transform_rotation_and_scale();
 }
 
 int64_t SGFixedNode2D::_get_fixed_scale_y() const {
-	return get_fixed_scale()->get_y();
+	return fixed_scale->get_y();
 }
 
-void SGFixedNode2D::_set_fixed_scale_y(int64_t p_y) {
-	fixed_scale->set_y(p_y);
-	set_fixed_scale(fixed_scale);
+void SGFixedNode2D::_set_fixed_scale_y(int64_t p_scale_y) {
+	fixed_scale->set_y(p_scale_y);
+	_update_fixed_transform_rotation_and_scale();
 }
 
 void SGFixedNode2D::set_fixed_transform(const Ref<SGFixedTransform2D> &p_fixed_transform) {
@@ -208,29 +218,23 @@ Ref<SGFixedVector2> SGFixedNode2D::get_fixed_position() const {
 void SGFixedNode2D::set_fixed_scale(const Ref<SGFixedVector2> &p_fixed_scale) {
 	ERR_FAIL_COND(!p_fixed_scale.is_valid());
 
-	SGFixedVector2Internal fixed_scale_internal = p_fixed_scale->get_internal();
-	SGFixedTransform2DInternal internal_transform = fixed_transform->get_internal();
-	internal_transform.set_scale(fixed_scale_internal);
-	fixed_transform->set_internal(internal_transform);
-	fixed_xform_dirty = true;
+	fixed_scale->set_internal(p_fixed_scale->get_internal());
+	_update_fixed_transform_rotation_and_scale();
 	_change_notify("fixed_scale");
 }
 
 Ref<SGFixedVector2> SGFixedNode2D::get_fixed_scale() const {
-	fixed_scale->set_internal(fixed_transform->get_internal().get_scale());
 	return fixed_scale;
 }
 
 void SGFixedNode2D::set_fixed_rotation(int64_t p_fixed_rotation) {
-	SGFixedTransform2DInternal internal_transform = fixed_transform->get_internal();
-	internal_transform.set_rotation(fixed(p_fixed_rotation));
-	fixed_transform->set_internal(internal_transform);
-	fixed_xform_dirty = true;
+	fixed_rotation = p_fixed_rotation;
+	_update_fixed_transform_rotation_and_scale();
 	_change_notify("fixed_rotation");
 }
 
 int64_t SGFixedNode2D::get_fixed_rotation() const {
-	return fixed_transform->get_internal().get_rotation().value;
+	return fixed_rotation;
 }
 
 void SGFixedNode2D::set_global_fixed_transform(const Ref<SGFixedTransform2D> &p_global_transform) {
@@ -272,7 +276,12 @@ int64_t SGFixedNode2D::get_global_fixed_rotation() const {
 void SGFixedNode2D::update_float_transform() {
 	if (fixed_xform_dirty) {
 		START_UPDATING_TRANSFORM();
-		set_transform(fixed_transform->to_float());
+
+		Transform2D float_xform;
+		float_xform.set_rotation_and_scale(fixed(fixed_rotation).to_float(), fixed_scale->to_float());
+		float_xform[2] = fixed_transform->get_origin()->to_float();
+		set_transform(float_xform);
+
 		STOP_UPDATING_TRANSFORM();
 		fixed_xform_dirty = false;
 	}
@@ -293,6 +302,8 @@ SGFixedNode2D::SGFixedNode2D() {
 
 	fixed_scale = Ref<SGFixedVector2>(memnew(SGFixedVector2(SGFixedVector2Internal(fixed::ONE, fixed::ONE))));
 	fixed_scale->set_watcher(this);
+
+	fixed_rotation = 0;
 
 	fixed_xform_dirty = false;
 

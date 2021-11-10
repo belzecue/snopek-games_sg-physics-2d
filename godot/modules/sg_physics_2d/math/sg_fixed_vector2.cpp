@@ -23,8 +23,6 @@
 
 #include "sg_fixed_vector2.h"
 
-#include "../scene/2d/sg_fixed_node_2d.h"
-
 void SGFixedVector2::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_x"), &SGFixedVector2::get_x);
 	ClassDB::bind_method(D_METHOD("set_x", "x"), &SGFixedVector2::set_x);

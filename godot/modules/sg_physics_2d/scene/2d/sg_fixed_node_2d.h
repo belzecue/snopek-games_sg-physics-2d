@@ -37,7 +37,8 @@ class SGFixedNode2D : public Node2D, public SGFixedVector2Watcher {
 	friend SGCollisionObject2D;
 
 	Ref<SGFixedTransform2D> fixed_transform;
-	mutable Ref<SGFixedVector2> fixed_scale;
+	Ref<SGFixedVector2> fixed_scale;
+	int64_t fixed_rotation;
 	bool fixed_xform_dirty;
 
 #ifdef TOOLS_ENABLED
@@ -51,6 +52,8 @@ protected:
 #ifdef TOOLS_ENABLED
 	virtual void _changed_callback(Object *p_changed, const char *p_prop) override;
 #endif
+
+	void _update_fixed_transform_rotation_and_scale();
 
 	_FORCE_INLINE_ SGFixedTransform2DInternal get_fixed_transform_internal() const { return fixed_transform->get_internal(); }
 	SGFixedTransform2DInternal get_global_fixed_transform_internal() const;
