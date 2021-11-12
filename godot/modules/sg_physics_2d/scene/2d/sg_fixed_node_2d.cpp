@@ -156,11 +156,6 @@ void SGFixedNode2D::update_global_fixed_transform_internal(const SGFixedTransfor
 	}
 }
 
-void SGFixedNode2D::_set_fixed_position(const SGFixedVector2Internal &p_fixed_position) {
-	fixed_transform->get_origin()->set_internal(p_fixed_position);
-	fixed_xform_dirty = true;
-}
-
 int64_t SGFixedNode2D::_get_fixed_position_x() const {
 	return fixed_transform->get_origin()->get_x();
 }
@@ -248,15 +243,29 @@ Ref<SGFixedTransform2D> SGFixedNode2D::get_global_fixed_transform() const {
 
 void SGFixedNode2D::set_global_fixed_position(const Ref<SGFixedVector2> &p_fixed_position) {
 	ERR_FAIL_COND(!p_fixed_position.is_valid());
-
-	SGFixedTransform2DInternal t = get_global_fixed_transform_internal();
-	t.set_origin(p_fixed_position->get_internal());
-	update_global_fixed_transform_internal(t);
+	set_global_fixed_position_internal(p_fixed_position->get_internal());
 }
 
 Ref<SGFixedVector2> SGFixedNode2D::get_global_fixed_position() {
 	return SGFixedVector2::from_internal(get_global_fixed_transform_internal().get_origin());
 }
+
+void SGFixedNode2D::set_fixed_position_internal(const SGFixedVector2Internal &p_fixed_position) {
+	fixed_transform->get_origin()->set_internal(p_fixed_position);
+	fixed_xform_dirty = true;
+}
+
+void SGFixedNode2D::set_global_fixed_position_internal(const SGFixedVector2Internal &p_fixed_position) {
+	SGFixedNode2D *fixed_parent = Object::cast_to<SGFixedNode2D>(get_parent());
+	if (fixed_parent) {
+		fixed_transform->get_origin()->set_internal(fixed_parent->get_global_fixed_transform_internal().affine_inverse().xform(p_fixed_position));
+	}
+	else {
+		fixed_transform->get_origin()->set_internal(p_fixed_position);
+	}
+	fixed_xform_dirty = true;
+}
+
 
 void SGFixedNode2D::set_global_fixed_rotation(int64_t p_fixed_rotation) {
 	SGFixedNode2D *fixed_parent = Object::cast_to<SGFixedNode2D>(get_parent());

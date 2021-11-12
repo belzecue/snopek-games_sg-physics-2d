@@ -61,7 +61,6 @@ protected:
 	void update_fixed_transform_internal(const SGFixedTransform2DInternal &p_transform);
 	void update_global_fixed_transform_internal(const SGFixedTransform2DInternal &p_global_transform);
 
-	void _set_fixed_position(const SGFixedVector2Internal &p_fixed_position);
 
 	int64_t _get_fixed_position_x() const;
 	void _set_fixed_position_x(int64_t p_x);
@@ -91,6 +90,9 @@ public:
 
 	void set_global_fixed_position(const Ref<SGFixedVector2> &p_fixed_position);
 	Ref<SGFixedVector2> get_global_fixed_position();
+
+	void set_fixed_position_internal(const SGFixedVector2Internal &p_fixed_position);
+	void set_global_fixed_position_internal(const SGFixedVector2Internal &p_fixed_position);
 
 	void set_global_fixed_rotation(int64_t p_fixed_rotation);
 	int64_t get_global_fixed_rotation() const;
