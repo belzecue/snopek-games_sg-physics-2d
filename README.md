@@ -194,6 +194,54 @@ func _physics_process(delta: float) -> void:
 However, if you have parts of the game that are purely cosmetic, you're safe to
 use normal floating-point math for those.
 
+Compiling from source
+---------------------
+
+SG Physics 2D is implemented as a Godot module, which (unlike a GDNative
+plugin) must be compiled into Godot.
+
+**But you don't have to be the one who does the compiling!**
+
+You can download pre-compiled binaries for Windows, Linux, MacOS and HTML5
+from the releases page:
+
+[https://gitlab.com/snopek-games/sg-physics-2d/-/releases](https://gitlab.com/snopek-games/sg-physics-2d/-/releases)
+
+However, if are targeting a platform that doesn't have pre-compiled binaries,
+or need to include another module, or just want to compile it yourself, you
+follow these steps:
+
+ 1. Download this repository and extract it.
+
+ 2. Download the source code for the Godot 3.x version that you are targeting.
+
+ 3. Using the command-line, switch to the directory containing the Godot
+    source code and run:
+
+	```
+	scons platform=PLATFORM tools=yes target=release_debug custom_modules=/PATH/sg-physics-2d/godot/modules
+	```
+
+	... replacing `PLATFORM` with your desired platform (ex. windows, osx,
+	x11) and `PATH` with the full path to the directory containing the source
+	code for SG Physics 2D.
+
+The instructions above will compile the Godot editor. If you want to compile
+the debug export templates instead, replace the command in the 3rd step with:
+
+```
+scons platform=PLATFORM tools=no target=debug custom_modules=/PATH/sg-physics-2d/godot/modules
+```
+
+... or for the release export templates:
+
+```
+scons platform=PLATFORM tools=no target=release production=yes custom_modules=/PATH/sg-physics-2d/godot/modules
+```
+
+For more information about compiling Godot, see [the official
+documentation](https://docs.godotengine.org/en/stable/development/compiling/index.html#toc-devel-compiling).
+
 License
 -------
 
