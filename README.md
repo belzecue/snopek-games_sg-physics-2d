@@ -76,20 +76,21 @@ Complete API documentation will be coming soon.
 If the result of a math operation will produce a number outside the range of
 values that we can represent, that's called an "overflow".
 
-If an overflow happens, you're not going to the result you're looking for.
+If an overflow happens, you're not going to the result you're looking for, or
+your game may even crash.
 
 **To prevent overflow, any `SGFixedVector2` shouldn't have an X or Y component
-outside the range `-1966080000` to `1966080000` (which is `-30000` to `30000` in
+outside the range `-1966080000` to `1966080000` (which is `-30000.0` to `30000.0` in
 "real world" numbers)!**
 
 Even though we can represent much bigger numbers, once you start performing any
 math on that vector, the physics engine will need to use intermediate numbers
-that are several times larger than the input you give it, which can lead to
+that are several times larger than the input you gave it, which can lead to
 overflow - and things just not working.
 
 So, this means any 2D scene you create can only be up to 60,000 pixels by 60,000
 pixels. This is fine for many games, but if you need to have bigger scenes,
-then, unfortunately, this physics engine won't work for you.
+then, unfortunately, SG Physics 2D won't work for you.
 
 Collision objects and shapes
 ----------------------------
