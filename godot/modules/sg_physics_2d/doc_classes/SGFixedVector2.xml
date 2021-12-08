@@ -4,7 +4,8 @@
 		A fixed-point vector used for 2D math.
 	</brief_description>
 	<description>
-		The fixed-point equivalent to [Vector2].
+		A vector with 2 components ([code]x[/code] and [code]y[/code]) which are fixed-point numbers.
+		It's the fixed-point equivalent to [Vector2].
 		Unlike [Vector2], SGFixedVector2 is a reference-counted object rather than a primative. This means it is always passed by reference rather than value. If you want need a copy, call [code]vector.copy()[/code].
 		To prevent overflow, any SGFixedVector2 shouldn't have an [code]x[/code] or [code]y[/code] component outside the range -1966080000 to 1966080000 (which is -30000.0 to 30000.0 in floating-point numbers)!
 		Even though we can represent much bigger numbers, once you start performing any math on that vector, the physics engine will need to use intermediate numbers that are several times larger than the input you give it, which can lead to overflow - and things just not working.
