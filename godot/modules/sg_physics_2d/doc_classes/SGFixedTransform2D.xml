@@ -107,12 +107,6 @@
 		<member name="y" type="SGFixedVector2" setter="set_y" getter="get_y">
 		</member>
 	</members>
-	<signals>
-		<signal name="changed">
-			<description>
-			</description>
-		</signal>
-	</signals>
 	<constants>
 	</constants>
 </class>

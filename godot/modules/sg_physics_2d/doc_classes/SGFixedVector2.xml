@@ -198,12 +198,6 @@
 		<member name="y" type="int" setter="set_y" getter="get_y" default="0">
 		</member>
 	</members>
-	<signals>
-		<signal name="changed">
-			<description>
-			</description>
-		</signal>
-	</signals>
 	<constants>
 	</constants>
 </class>

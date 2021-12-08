@@ -174,7 +174,5 @@
 		</constant>
 		<constant name="EPSILON" value="1">
 		</constant>
-		<constant name="ARITHMETIC_OVERFLOW" value="0">
-		</constant>
 	</constants>
 </class>

@@ -40,6 +40,11 @@
 			<description>
 			</description>
 		</method>
+		<method name="update_float_transform">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="fixed_position" type="SGFixedVector2" setter="set_fixed_position" getter="get_fixed_position">
