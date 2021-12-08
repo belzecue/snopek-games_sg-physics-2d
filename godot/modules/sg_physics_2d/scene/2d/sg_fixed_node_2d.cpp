@@ -25,14 +25,6 @@
 
 #include <core/engine.h>
 
-#ifdef TOOLS_ENABLED
-#define START_UPDATING_TRANSFORM() updating_transform = true
-#define STOP_UPDATING_TRANSFORM() updating_transform = false
-#else
-#define START_UPDATING_TRANSFORM()
-#define STOP_UPDATING_TRANSFORM()
-#endif
-
 void SGFixedNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fixed_transform"), &SGFixedNode2D::get_fixed_transform);
 	ClassDB::bind_method(D_METHOD("set_fixed_transform", "fixed_transform"), &SGFixedNode2D::set_fixed_transform);
@@ -201,9 +193,18 @@ Ref<SGFixedTransform2D> SGFixedNode2D::get_fixed_transform() const {
 
 void SGFixedNode2D::set_fixed_position(const Ref<SGFixedVector2> &p_fixed_position) {
 	ERR_FAIL_COND(!p_fixed_position.is_valid());
+
 	fixed_transform->get_origin()->set_internal(p_fixed_position->get_internal());
 	fixed_xform_dirty = true;
 	_change_notify("fixed_position");
+
+#ifdef TOOLS_ENABLED
+	if (Engine::get_singleton()->is_editor_hint()) {
+		updating_transform = true;
+		set_position(fixed_transform->get_origin()->to_float());
+		updating_transform = false;
+	}
+#endif
 }
 
 Ref<SGFixedVector2> SGFixedNode2D::get_fixed_position() const {
@@ -216,6 +217,14 @@ void SGFixedNode2D::set_fixed_scale(const Ref<SGFixedVector2> &p_fixed_scale) {
 	fixed_scale->set_internal(p_fixed_scale->get_internal());
 	_update_fixed_transform_rotation_and_scale();
 	_change_notify("fixed_scale");
+
+#ifdef TOOLS_ENABLED
+	if (Engine::get_singleton()->is_editor_hint()) {
+		updating_transform = true;
+		set_scale(fixed_scale->to_float());
+		updating_transform = false;
+	}
+#endif
 }
 
 Ref<SGFixedVector2> SGFixedNode2D::get_fixed_scale() const {
@@ -226,6 +235,14 @@ void SGFixedNode2D::set_fixed_rotation(int64_t p_fixed_rotation) {
 	fixed_rotation = p_fixed_rotation;
 	_update_fixed_transform_rotation_and_scale();
 	_change_notify("fixed_rotation");
+
+#ifdef TOOLS_ENABLED
+	if (Engine::get_singleton()->is_editor_hint()) {
+		updating_transform = true;
+		set_rotation(fixed(fixed_rotation).to_float());
+		updating_transform = false;
+	}
+#endif
 }
 
 int64_t SGFixedNode2D::get_fixed_rotation() const {
@@ -284,14 +301,19 @@ int64_t SGFixedNode2D::get_global_fixed_rotation() const {
 
 void SGFixedNode2D::update_float_transform() {
 	if (fixed_xform_dirty) {
-		START_UPDATING_TRANSFORM();
+#ifdef TOOLS_ENABLED
+		updating_transform = true;
+#endif
 
 		Transform2D float_xform;
 		float_xform.set_rotation_and_scale(fixed(fixed_rotation).to_float(), fixed_scale->to_float());
 		float_xform[2] = fixed_transform->get_origin()->to_float();
 		set_transform(float_xform);
 
-		STOP_UPDATING_TRANSFORM();
+#ifdef TOOLS_ENABLED
+		updating_transform = false;;
+#endif
+
 		fixed_xform_dirty = false;
 	}
 }
