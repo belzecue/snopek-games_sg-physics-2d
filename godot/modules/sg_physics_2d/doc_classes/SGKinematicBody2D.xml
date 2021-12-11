@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGKinematicBody2D" inherits="SGCollisionObject2D" version="3.4">
+	<brief_description>
+		Kinematic physics body for SG Physics 2D.
+	</brief_description>
+	<description>
+		Kinematic bodies are intended to be controlled directly by code (rather than physics forces).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="move_and_collide">
+			<return type="SGKinematicCollision2D" />
+			<argument index="0" name="linear_velocity" type="SGFixedVector2" />
+			<description>
+			</description>
+		</method>
+		<method name="move_and_slide">
+			<return type="SGFixedVector2" />
+			<argument index="0" name="linear_velocity" type="SGFixedVector2" />
+			<argument index="1" name="max_slides" type="int" default="4" />
+			<description>
+			</description>
+		</method>
+		<method name="rotate_and_slide">
+			<return type="bool" />
+			<argument index="0" name="rotation" type="int" />
+			<argument index="1" name="max_slides" type="int" default="4" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="fixed_position" type="SGFixedVector2" setter="set_fixed_position" getter="get_fixed_position" override="true" />
+		<member name="fixed_scale" type="SGFixedVector2" setter="set_fixed_scale" getter="get_fixed_scale" override="true" />
+	</members>
+	<constants>
+	</constants>
+</class>

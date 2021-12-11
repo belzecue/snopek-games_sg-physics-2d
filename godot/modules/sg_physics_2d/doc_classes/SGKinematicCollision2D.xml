@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGKinematicCollision2D" inherits="Reference" version="3.4">
+	<brief_description>
+		Collision data for [SGKinematicBody2D] collisions.
+	</brief_description>
+	<description>
+		Collision data for [SGKinematicBody2D] collisions.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="collider" type="Object" setter="" getter="get_collider">
+		</member>
+		<member name="normal" type="SGFixedVector2" setter="" getter="get_normal">
+		</member>
+		<member name="remainder" type="SGFixedVector2" setter="" getter="get_remainder">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

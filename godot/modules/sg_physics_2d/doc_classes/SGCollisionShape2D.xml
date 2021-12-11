@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGCollisionShape2D" inherits="SGFixedNode2D" version="3.4">
+	<brief_description>
+		Defines a simple 2D collision shape for SG Physics 2D.
+	</brief_description>
+	<description>
+		Provides a simple 2D collision shape to an [SGCollisionObject2D] parent.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="disabled" type="bool" setter="set_disabled" getter="get_disabled" default="false">
+		</member>
+		<member name="fixed_position" type="SGFixedVector2" setter="set_fixed_position" getter="get_fixed_position" override="true" />
+		<member name="fixed_scale" type="SGFixedVector2" setter="set_fixed_scale" getter="get_fixed_scale" override="true" />
+		<member name="shape" type="SGShape2D" setter="set_shape" getter="get_shape">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

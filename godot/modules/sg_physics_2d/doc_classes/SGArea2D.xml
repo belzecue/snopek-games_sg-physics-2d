@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SGArea2D" inherits="SGCollisionObject2D" version="3.4">
+	<brief_description>
+		2D area for detection of other areas and physics bodies.
+	</brief_description>
+	<description>
+		2D area that can detect overlapping [SGCollisionObject2D]s or other [SGArea2D]s.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_overlapping_areas" qualifiers="const">
+			<return type="Array" />
+			<argument index="0" name="sort" type="bool" default="true" />
+			<description>
+				Returns a list of overlapping [SGCollisionObject2D]s.
+				If the [code]sort[/code] argument is set to [code]true[/code], the list will be sorted by scene tree order. Normally, this is what you want because it ensures the results are in a deterministic order, however, there is a performance cost. So, if the order of the results isn't important in a particular case (ex. if you are simply checking the number of results) then you can set it to [code]false[/code].
+			</description>
+		</method>
+		<method name="get_overlapping_bodies" qualifiers="const">
+			<return type="Array" />
+			<argument index="0" name="sort" type="bool" default="true" />
+			<description>
+				Returns a list of overlapping [SGArea2D]s.
+				If the [code]sort[/code] argument is set to [code]true[/code], the list will be sorted by scene tree order. Normally, this is what you want because it ensures the results are in a deterministic order, however, there is a performance cost. So, if the order of the results isn't important in a particular case (ex. if you are simply checking the number of results) then you can set it to [code]false[/code].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="fixed_position" type="SGFixedVector2" setter="set_fixed_position" getter="get_fixed_position" override="true" />
+		<member name="fixed_scale" type="SGFixedVector2" setter="set_fixed_scale" getter="get_fixed_scale" override="true" />
+	</members>
+	<constants>
+	</constants>
+</class>
