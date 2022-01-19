@@ -31,6 +31,28 @@ func test_division():
 	assert_eq(c, 491520)
 
 func test_trig():
+	#
+	# Test some important "well known" values
+	#
+	
+	var sin_0: int = SGFixed.sin(0)
+	assert_eq(sin_0, 0)
+	
+	# This should match cos(0), but it doesn't since we're temporarily
+	# hard-coding it.
+	#
+	# @todo Remove after we've replaced libfixmatch per issue #4:
+	#       https://gitlab.com/snopek-games/sg-physics-2d/-/issues/4
+	#var sin_90deg: int = SGFixed.sin(SGFixed.PI / 2)
+	#assert_eq(sin_90deg, 65536)
+	
+	var cos_0: int = SGFixed.cos(0)
+	assert_eq(cos_0, 65536)
+	
+	#
+	# Test that big values loop around as expected
+	#
+	
 	var sin_10: int = SGFixed.sin(10*65536)
 	assert_eq(sin_10, -35653)
 	

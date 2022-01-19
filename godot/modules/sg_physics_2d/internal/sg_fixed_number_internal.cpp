@@ -84,6 +84,17 @@ fixed fixed::sin() const {
 }
 
 fixed fixed::cos() const {
+	// libfixmath's fix16_cos(0) will return 65537, rather than the correct
+	// result of 65536. Because cos(0) is used when generating rotation
+	// matrices with a rotation of 0, we need cos(0) to be 65536 to match the
+	// identity matrix.
+	//
+	// @todo Remove after we've replaced libfixmatch per issue #4:
+	//       https://gitlab.com/snopek-games/sg-physics-2d/-/issues/4
+	if (value == 0) {
+		return fixed(65536);
+	}
+
 	if (value < fix16_maximum && value > fix16_minimum) {
 		return fixed(fix16_cos(value));
 	}
