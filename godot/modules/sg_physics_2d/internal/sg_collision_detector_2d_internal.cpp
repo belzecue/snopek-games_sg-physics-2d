@@ -22,6 +22,7 @@
 /*************************************************************************/
 
 #include "sg_collision_detector_2d_internal.h"
+#include <algorithm>
 
 using Interval = SGCollisionDetector2DInternal::Interval;
 
@@ -129,11 +130,11 @@ bool SGCollisionDetector2DInternal::Circle_overlaps_Circle(const SGCircle2DInter
 
 	// We only multiply by the scale.x because we don't support non-uniform scaling.
 	fixed combined_radius = circle1.get_radius() * t1.get_scale().x + circle2.get_radius() * t2.get_scale().x;
-	bool overlapping = (line.length_squared() <= combined_radius);
+	bool overlapping = (line.length_squared() <= combined_radius * combined_radius);
 
 	if (overlapping && p_info) {
 		// Add half to the seperation so we'd move to a non-overlapping state.
-		p_info->separation = line.normalized() * (line.length() - (circle1.get_radius() + circle2.get_radius()) + fixed::HALF);
+		p_info->separation = line.normalized() * (combined_radius - line.length() + fixed::HALF);
 	}
 
 	return overlapping;
@@ -145,33 +146,60 @@ bool SGCollisionDetector2DInternal::Circle_overlaps_AABB(const SGCircle2DInterna
 
 	SGFixedTransform2DInternal t = circle.get_global_transform();
 
-	SGFixedVector2Internal closest_point = t.get_origin();
+	const SGFixedVector2Internal center = t.get_origin();
+	SGFixedVector2Internal closest_point = center;
 	closest_point.x = CLAMP(closest_point.x, min.x, max.x);
 	closest_point.y = CLAMP(closest_point.y, min.y, max.y);
 
-	SGFixedVector2Internal line = t.get_origin() - closest_point;
+	SGFixedVector2Internal line = center - closest_point;
 	// We only multiply by the scale.x because we don't support non-uniform scaling.
-	fixed radius = circle.get_radius() * t.get_scale().x;
+	const fixed radius = circle.get_radius() * t.get_scale().x;
+	bool overlapping = false;
 
-	bool overlapping = (line.length_squared() <= (radius * radius));
-	if (overlapping && p_info) {
-		// Add half to the seperation so we'd move to a non-overlapping state.
-		p_info->separation = line.normalized() * (radius - line.length() + fixed::HALF);
+	// Case where the center of the circle is inside the rectangle
+	if (line == SGFixedVector2Internal::ZERO) {
+		const SGFixedVector2Internal right_up = max - center;
+		const SGFixedVector2Internal left_down = center - min;
+		const fixed min_value = std::min({ right_up.y, right_up.x, left_down.y, left_down.x });
+		if (min_value == right_up.y) {
+			line = SGFixedVector2Internal(fixed::ZERO, fixed::ONE);
+		}
+		else if (min_value == right_up.x) {
+			line = SGFixedVector2Internal(fixed::ONE, fixed::ZERO);
+		}
+		else if (min_value == left_down.y) {
+			line = SGFixedVector2Internal(fixed::ZERO, fixed::NEG_ONE);
+		}
+		else {
+			line = SGFixedVector2Internal(fixed::NEG_ONE, fixed::ZERO);
+		}
+		if (p_info) {
+			// Add half to the seperation so we'd move to a non-overlapping state.
+			p_info->separation = line * (radius + min_value + fixed::HALF);
+		}
+		overlapping = true;
+	}
+	else {
+		overlapping = (line.length_squared() <= (radius * radius));
+		if (overlapping && p_info) {
+			// Add half to the seperation so we'd move to a non-overlapping state.
+			p_info->separation = line.normalized() * (radius - line.length() + fixed::HALF);
+		}
 	}
 
 	return overlapping;
 }
 
 bool SGCollisionDetector2DInternal::Circle_overlaps_Rectangle(const SGCircle2DInternal &circle, const SGRectangle2DInternal &rectangle, OverlapInfo *p_info) {
-	// Convert first rectangle into its own local space.
-	SGFixedRect2Internal aabb(-rectangle.get_extents(), rectangle.get_extents() * fixed::TWO);
-
 	// Transform the circle into the local space of the rectangle.
 	SGFixedTransform2DInternal t = rectangle.get_global_transform();
 	SGCircle2DInternal localized_circle(circle.get_radius());
 	localized_circle.set_transform(t.affine_inverse() * circle.get_global_transform());
 
-	bool overlapping = Circle_overlaps_AABB(localized_circle, aabb, p_info);
+	// Get the AABB from the rectangle
+	SGFixedRect2Internal aabb(-rectangle.get_extents(), rectangle.get_extents() * fixed::TWO);
+
+	const bool overlapping = Circle_overlaps_AABB(localized_circle, aabb, p_info);
 
 	if (overlapping && p_info) {
 		// Transform the separation vector back into global space (but don't translate
