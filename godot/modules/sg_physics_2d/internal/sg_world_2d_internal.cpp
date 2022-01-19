@@ -60,7 +60,7 @@ bool SGWorld2DInternal::overlaps(SGCollisionObject2DInternal *p_object1, SGColli
 	bool overlapping = false;
 
 	SGWorld2DInternal::ShapeOverlapInfo shape_overlap_info;
-	fixed longest_separation_squared = fixed::ZERO;
+	fixed longest_separation_squared = -fixed::HALF;
 
 	for (const List<SGShape2DInternal *>::Element *S1 = p_object1->get_shapes().front(); S1; S1 = S1->next()) {
 		for (const List<SGShape2DInternal *>::Element *S2 = p_object2->get_shapes().front(); S2; S2 = S2->next()) {
@@ -147,7 +147,7 @@ private:
 
 	bool overlapping;
 	SGWorld2DInternal::BodyOverlapInfo test_overlap_info;
-	fixed longest_separation_squared;
+	fixed longest_separation_squared = -fixed::HALF;
 
 public:
 

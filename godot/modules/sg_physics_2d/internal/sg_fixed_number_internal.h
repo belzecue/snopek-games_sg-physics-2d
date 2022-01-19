@@ -165,6 +165,7 @@ struct fixed {
 	_FORCE_INLINE_ fixed abs() const { return (value < 0) ? fixed(-value) : *this; }
 	_FORCE_INLINE_ fixed operator-() const { return fixed(-value); }
 	_FORCE_INLINE_ fixed sqrt() const { return fixed(sg_sqrt_64(value << 16)); }
+	_FORCE_INLINE_ fixed sign() const { return value < 0 ? fixed::NEG_ONE : (value > 0 ? fixed::ONE : fixed::ZERO); }
 
 	fixed  sin() const;
 	fixed  cos() const;
