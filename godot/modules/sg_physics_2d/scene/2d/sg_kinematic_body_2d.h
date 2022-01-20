@@ -33,6 +33,7 @@ class SGKinematicBody2D : public SGCollisionObject2D {
 
 protected:
 	static void _bind_methods();
+	Vector<SGCollisionObject2D*> colliders;
 
 public:
 	struct Collision {
@@ -51,6 +52,7 @@ public:
 	bool rotate_and_slide(int64_t p_rotation, int p_max_slides);
 
 	Ref<SGKinematicCollision2D> _move(const Ref<SGFixedVector2> &p_linear_velocity);
+	int get_slide_count() const;
 
 	SGKinematicBody2D();
 	~SGKinematicBody2D();

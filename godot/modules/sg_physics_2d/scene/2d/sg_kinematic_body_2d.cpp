@@ -36,6 +36,7 @@ void SGKinematicBody2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("move_and_collide", "linear_velocity"), &SGKinematicBody2D::_move);
 	ClassDB::bind_method(D_METHOD("move_and_slide", "linear_velocity", "max_slides"), &SGKinematicBody2D::move_and_slide, DEFVAL(4));
 	ClassDB::bind_method(D_METHOD("rotate_and_slide", "rotation", "max_slides"), &SGKinematicBody2D::rotate_and_slide, DEFVAL(4));
+	ClassDB::bind_method(D_METHOD("get_slide_count"), &SGKinematicBody2D::get_slide_count);
 }
 
 bool SGKinematicBody2D::move_and_collide(const SGFixedVector2Internal &p_linear_velocity, SGKinematicBody2D::Collision &p_collision) {
@@ -113,6 +114,7 @@ bool SGKinematicBody2D::move_and_collide(const SGFixedVector2Internal &p_linear_
 Ref<SGFixedVector2> SGKinematicBody2D::move_and_slide(const Ref<SGFixedVector2> &p_linear_velocity, int p_max_slides) {
 	ERR_FAIL_COND_V(!p_linear_velocity.is_valid(), Ref<SGFixedVector2>());
 	
+	colliders.clear();
 	SGFixedVector2Internal motion = p_linear_velocity->get_internal();
 
 	while (p_max_slides) {
@@ -122,6 +124,7 @@ Ref<SGFixedVector2> SGKinematicBody2D::move_and_slide(const Ref<SGFixedVector2> 
 			// No collision, so we're good - bail!
 			break;
 		}
+		colliders.push_back(collision.collider);
 		motion = collision.remainder.slide(collision.normal);
 
 		if (motion == SGFixedVector2Internal::ZERO) {
@@ -133,6 +136,10 @@ Ref<SGFixedVector2> SGKinematicBody2D::move_and_slide(const Ref<SGFixedVector2> 
 	}
 
 	return Ref<SGFixedVector2>(memnew(SGFixedVector2(motion)));
+}
+
+int SGKinematicBody2D::get_slide_count() const {
+	return colliders.size();
 }
 
 bool SGKinematicBody2D::rotate_and_slide(int64_t p_rotation, int p_max_slides) {

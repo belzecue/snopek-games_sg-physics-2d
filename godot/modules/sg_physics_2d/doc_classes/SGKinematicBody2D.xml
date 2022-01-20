@@ -22,6 +22,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="get_slide_count">
+			<return type="int" />
+			<description>
+				Get the number of slides of the last move_and_slide call
+			</description>
+		</method>
 		<method name="rotate_and_slide">
 			<return type="bool" />
 			<argument index="0" name="rotation" type="int" />

@@ -22,6 +22,7 @@
 /*************************************************************************/
 
 #include "sg_fixed_vector2_internal.h"
+#include <core/engine.h>
 
 const fixed SGFixedVector2Internal::FIXED_UNIT_EPSILON = fixed(65);
 
@@ -145,7 +146,24 @@ SGFixedVector2Internal SGFixedVector2Internal::slide(const SGFixedVector2Interna
 #ifdef MATH_CHECKS
 	ERR_FAIL_COND_V_MSG(!p_normal.is_normalized(), SGFixedVector2Internal(), "The normal SGFixedVector2Internal must be normalized.");
 #endif
-	return *this - p_normal * this->dot(p_normal);
+	const fixed min_outward_dot = fixed(5); // 0.004 degrees, a small value
+	const SGFixedVector2Internal original_slide = *this - p_normal * this->dot(p_normal);
+	const fixed original_slide_length = original_slide.length();
+	if (original_slide_length.value == 0) {
+		return original_slide;
+	}
+	const SGFixedVector2Internal original_slide_normalized = original_slide / original_slide_length;
+	const fixed outward_dot = original_slide_normalized.dot(p_normal);
+	// Is the new direction outward enough so that we don't bump again against the shape?
+	if (outward_dot >= min_outward_dot) {
+		return original_slide;
+	}
+
+	// Compute the smallest correction vector to get the good outward direction
+	// (Minimise correction squared length under constraint of the objective) 
+	const fixed objective = min_outward_dot - outward_dot;
+	const SGFixedVector2Internal correction = p_normal * objective;
+	return (original_slide_normalized + correction) * original_slide_length;
 }
 
 SGFixedVector2Internal SGFixedVector2Internal::bounce(const SGFixedVector2Internal &p_normal) const {
