@@ -32,8 +32,10 @@ class SGKinematicBody2D : public SGCollisionObject2D {
 	GDCLASS(SGKinematicBody2D, SGCollisionObject2D);
 
 protected:
-	static void _bind_methods();
+	fixed safe_margin;
 	Vector<SGCollisionObject2D*> colliders;
+
+	static void _bind_methods();
 
 public:
 	struct Collision {
@@ -46,6 +48,9 @@ public:
 			collider = nullptr;
 		}
 	};
+
+	int get_safe_margin() const;
+	void set_safe_margin(int p_safe_margin);
 
 	bool move_and_collide(const SGFixedVector2Internal &p_linear_velocity, Collision &p_collision);
 	Ref<SGFixedVector2> move_and_slide(const Ref<SGFixedVector2> &p_linear_velocity, int p_max_slides);
